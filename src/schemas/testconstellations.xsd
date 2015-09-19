@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="1.0" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  jaxb:extensionBindingPrefixes="xjc">
+
+  <xs:include schemaLocation="csu.xsd" />
+
+  <xs:simpleType name="test_type">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(csci)|(unit)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="testconstellations">
+    <xs:annotation>
+      <xs:documentation>
+Root element of testconstellations file. Specifies all testconstellations or includes other testconstellations files.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="testconstellation" />
+        <xs:element ref="include_testconstellations" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="testconstellation">
+    <xs:annotation>
+      <xs:documentation>
+Specifies a testconstellation with one tested_object and one harness.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="regression_type" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element ref="tested_object" />
+        <xs:element ref="harness" />
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">
+The names of the testconstellations must be unique within a CI. If the name contains a filename extension this will determine the mode of the linking. If the extension is left out .exe will be added and c++ mode will be used. This name will also be used for the log file.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="test_type" use="optional"
+              type="test_type">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">
+            If specified as "csci", indicates that it is a CSCI test. If not specified or specified as "unit", indicates UNIT test.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="regression_type">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+If given, specifies the types of regression tests that this testconstellation is activated for.
+
+This works as follows:
+The makefile run test targets will check the REGRESSION_LEVEL environment variable and
+run the test only if the specified regression_type is given.
+
+If REGRESSION_LEVEL is not set, all tests are run.
+
+If not given, this test is run for any REGRESSION_LEVEL.
+
+If regression_target_list is given and the environment variable REGRESSION_TARGET_LIST_(TYPE)
+is set the test will only be executed for the specified targets.
+          </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="regression_target_list" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:NCName" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="regression_target_list">
+    <xs:annotation>
+      <xs:documentation>
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="type" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="tested_object">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+Specifies the files that makes up the tested object.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="file" type="file" />
+        <xs:element name="include_csu" type="include_csu" />
+        <xs:element name="csu" type="Test_Csu" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="harness">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+Specifies the part of the code that is the harness i.e. the test case and everything needed(tools, libs) to support the tests.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element ref="lib" />
+        <xs:element name="stub" type="stub"/>
+        <xs:element ref="bplib" />
+        <xs:element name="include_csu" type="include_csu">
+          <xs:annotation>
+            <xs:documentation xml:lang="en">
+Specifies a csu.xml with Ad hoc Stubs or a testcase.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element name="csu" type="Test_Csu" />
+        <xs:element name="inline_csu" type="inline_csu" />
+        <xs:element ref="wcru_config" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:complexType name="inline_csu">
+    <xs:annotation>
+    <xs:documentation>
+Specifies a csu to use in the enclosing context.
+    </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="include" />
+        <xs:element ref="include_group" />
+      </xs:choice>
+      <xs:element maxOccurs="unbounded" ref="source" />
+    </xs:sequence>
+    <xs:attribute name="name" use="required" type="xs:NCName">
+    <xs:annotation>
+    <xs:documentation>
+Name of the inline csu.
+
+Must be unique within the testconstellation and
+must not conflict with any non-inline csu.
+    </xs:documentation>
+    </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="include_generated_directories" use="optional"
+      type="xs:boolean">
+      <xs:annotation>
+          <xs:documentation xml:lang="en">
+All interface directories from the namespaces of used ports are specified as include directories for all files compiled in the CI. If two include files share the same name, set this to false. Then all includes have to be specified explicitly.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+  </xs:complexType>
+
+
+
+  <xs:complexType name="file">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+Files in the tested object are specified as source files without includes.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="filename_appl" use="optional" type="xs:string">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+This path is relative to the root of the application of the tested CI.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="csu" use="optional" type="xs:NCName">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+Specify the csu that includes this file.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="include_csu">
+    <xs:attribute name="filename_rel" use="required" type="xs:string">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+Filename relative to the current file.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="name" use="optional" type="xs:NCName">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+If name is given only the named CSU is used. If name is not given all CSUs in the file are used.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="coverage" use="optional" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+Attribute is valid only enclosed in testconstellation harness. If attribute is specified as "true", the files included via the csu are compiled with coverage instrumentation as defined by the CI under test.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="Test_Csu">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+Generic tag for specifying a csu in testconstellations.xml
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="ref" use="required" type="xs:NCName">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+The name of the csu as defined in the csu.xml of the application to be tested.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="profile" use="optional" type="xs:NCName">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+The name of the profile in link_spec.xml that should bu used to add extra libs and stubs to link with the binary.
+If no profile attribute is specified, then the profile "default" will be used if it exist.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:element name="lib">
+    <xs:annotation>
+      <xs:documentation>
+This tag require mbede-generator to be run at the top level of the MBE in order to generate necessary dependency in config_spec.xml.
+
+The libraries specified are uninstrumented.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:NCName">
+        <xs:annotation>
+          <xs:documentation>
+This name shall be either an IFS, a LS or a namespace.
+            </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:complexType name="stub">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded"  name="csu" type="Test_Csu" />
+    </xs:sequence>
+    <xs:attribute name="name" use="required" type="xs:NCName" />
+  </xs:complexType>
+
+  <xs:element name="bplib">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+Special case for external test harness libraries.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string" />
+      <xs:attribute name="version" use="required" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="wcru_config">
+    <xs:annotation>
+      <xs:documentation>
+Definition file for the WCRU test.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="filename_rel" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="include_testconstellations">
+    <xs:annotation>
+      <xs:documentation>
+Includes another testconstellations. xml. It will insert the testconstallation items of the specified file.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="filename_rel" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+Filename relative to the current file.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
