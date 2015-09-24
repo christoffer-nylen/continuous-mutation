@@ -1,0 +1,20 @@
+<csus include_generated_directories=”true”>
+  <include_group name=”harness”>
+    <include dir_rel=”test_suite/verifier”/>
+    <include dir_rel=”test_suite/driver”/>
+    <include dir_rel=”test_suite/input”/>
+    <include dir_rel=”test_suite/”/>
+  </include_group>
+
+  <csu name=”other_csus”>
+    <include name=”control_unit”/>
+    <include name=”statistics”/>
+    <include name=”hardware_layer::switches”/>
+  </csu>
+
+  <csu name=”adapter”>
+    <include dir_appl=”src/adapter_csu_a/”/>
+    <include dir_appl=”src/adapter_csu_a/implementation”/>
+    <include dir_appl=”src/adapter_csu_a/interface”/>
+  </csu>
+</csus>
