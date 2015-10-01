@@ -11,8 +11,8 @@
       <lib name="math"/>
 
       <stub name="hardware_layer">
-        <csu ref="buttons"/>
-        <csu ref="switches"/>
+	<csu ref="buttons"/>
+	<csu ref="switches"/>
       </stub>
 
       <stub name="control_unit">
