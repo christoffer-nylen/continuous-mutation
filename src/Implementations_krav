@@ -8,7 +8,7 @@ delmål:
 	Spara filnamn, ändring (Tag data) samt rad för ändring
 
 Krav 2: Relatera <modifieringen> till ett eller flera <felmeddelanden>.
-     	Sätta upp en databas
+     	Sätta upp en databas (SQLite3)
 	Relatera felmeddelande till ändring (Tag data)
 	Ta ut det viktigaste i felmeddelandet som är kopplat till (Tag data)
      	

@@ -2,38 +2,46 @@ from xml.dom.minidom import parse, Node
 
 class Mutator:
     def __init__(self, xmlfile):
+        """ Init the class objects parses an xml file and stores the root node"""
         self.xmlfile = xmlfile
         self.xmltree = parse(xmlfile)
         self.xmlroot = self.xmltree.documentElement
 
-    def find_nodes(self, node_type):
+    def NodeList(self):
+        """Returns an empty list used for helper functions"""
         node_list = []
-        for node in self.xmltree.getElementsByTagName(node_type):
-            if node.nodeType == Node.ELEMENT_NODE:
-                node_list.append(node)
-                print(node)
-            if node.hasChildNodes():
-                for child in node.childNodes:
-                    if child.nodeType == Node.ELEMENT_NODE:
-                        node_list.append(child)
-                        print(child)
+        return node_list
+
+    def find_nodes(self, node_type, node_attribute = None):
+        """ Recursivly locate a given node by its tag name and (optional) node_attribute """
+        return self._find_nodes_helper(self.xmlroot, node_type, node_attribute, self.NodeList())
+
+    def _find_nodes_helper(self, parent, name, attribute, node_list):
+        """ Helper function that recursivly finds a node, given a name and/or attribute """
+        for node in parent.childNodes:
+            if node.nodeType == node.ELEMENT_NODE:
+                if node.tagName == name and attribute in \
+                                dict(node.attributes.items()).values():
+                    node_list.append(node)
+                elif node.tagName == name and attribute == None:
+                    node_list.append(node)
+            self._find_nodes_helper(node, name, attribute, node_list)
+        return node_list                
+
 
     def remove_node(self, node_type, attribute_name = None):
-        # Find nodes matching the searched node type (e.g stub, harness etc)
-        for node in self.xmltree.getElementsByTagName(node_type):
-            for child in node.childNodes:
-                if child.nodeType == Node.ELEMENT_NODE:
-                    print("Removing from parent node", child.parentNode.getAttribute("name"),",child", child)
-                    child.parentNode.removeChild(child)
-            #After all children are removed, remove the node itself
-            if node.getAttribute("name") == attribute_name or node.getAttribute("ref") == attribute_name or node.getAttribute("filename_rel") == attribute_name:
-                print("Removing from parent node", node.parentNode.tagName,",child", node)
+        found = self.find_nodes(node_type, attribute_name)
+        if found:
+            for node in found:
                 node.parentNode.removeChild(node)
-            
+
+    def write(self, file_name):
+        file_handle = open(file_name, 'wb')
+        self.xmlroot.writexml(file_handle)
+        file_handle.close()
 
 mutator = Mutator("testxml/testconstellations.xml")
-print("before removing")
-mutator.find_nodes("stub")
-mutator.remove_node("csu", "buttons")
-print("after removing")
-mutator.find_nodes("stub")        
+found = mutator.find_nodes("stub", "control_unit")
+print(found)
+mutator.remove_node("stub", "control_unit")
+mutator.write("test.xml")
