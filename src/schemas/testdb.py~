@@ -1,0 +1,51 @@
+import sqlite3
+
+"""
+tabeler
+id, felmedelande
+id, typ av fel
+id, filnamn
+fel_id, typ_id, fil_id
+"""
+
+db = sqlite3.connect("test.db")
+
+def createDB():
+    cursor = db.cursor()
+
+    cursor.execute('''CREATE TABLE error_msg(
+    id INT PRIMERY KEY AUTOINCREMENT DEFAULT 0, msg TEXT UNIQUE )''')
+
+
+    cursor.execute('''CREATE TABLE error_type(
+    id INT PRIMERY KEY AUTOINCREMENT DEFAULT 0, type TEXT UNIQUE )''')
+
+
+    cursor.execute('''CREATE TABLE filename(
+    id INT PRIMERY KEY AUTOINCREMENT DEFAULT 0, name TEXT UNIQUE)''')
+
+
+    cursor.execute('''CREATE TABLE errors(
+    msg_id INT, type_id INT, file_id,
+    FOREIGN KEY (msg_id) REFERENCES error_msg(id), 
+    FOREIGN KEY (type_id) REFERENCES error_type(id), 
+    FOREIGN KEY (file_id) REFERENCES filename(id)
+    )''')
+
+
+    cursor.commit()
+
+    cursor.close()
+
+
+def insert(error_msg, error_type, filename):
+    
+    cursor = db.cursor()
+
+    cursor.execute("INSERT INTO error_msg VALUES (?)", error_msg)
+    cursor.execute("INSERT INTO error_type VALUES (?)", error_type)
+    cursor.execute("INSERT INTO filename VALUES (?)", filename)
+
+    cursor.execute("INSERT INTO error_msg VALUES (?)", error_msg)
+
+    

@@ -1,0 +1,29 @@
+ <xs:element name="testconstellation">
+    <xs:annotation>
+      <xs:documentation>
+Specifies a testconstellation with one tested_object and one harness.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="regression_type" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element ref="tested_object" />
+
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">
+The names of the testconstellations must be unique within a CI. If the name contains a filename extension this will determine the mode of the linking. If the extension is left out .exe will be added and c++ mode will be used. This name will also be used for the log file.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="test_type" use="optional"
+              type="test_type">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">
+            If specified as "csci", indicates that it is a CSCI test. If not specified or specified as "unit", indicates UNIT test.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
