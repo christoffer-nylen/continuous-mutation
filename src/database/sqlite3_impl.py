@@ -57,6 +57,23 @@ def insert(error_msg, error_type, filename):
     #db.close()
 
 
+def find(_error_msg):
+    """
+    find error type by error msg. Returns list with all related error types
+    [{error_msg},{error_type}]
+    """
+    cursor = db.cursor()
+
+    cursor.execute('''SELECT error_msg.msg, error_type.type FROM errors
+    LEFT JOIN error_msg
+    ON error_msg.id = errors.msg_id
+    LEFT JOIN error_type
+    ON error_type.id = errors.type_id
+    WHERE error_msg.msg = (?)''', (_error_msg,))
+
+    return cursor.fetchall()
+
+
 
 def printAllTables():
 
@@ -86,12 +103,5 @@ def printAllTables():
         
 
 
-    
-    
-createDB()
-insert("felmedelane: fel!", "superfeltyp", "felfil.txt")
-insert("felmedelane: fel2!", "superfeltyp2", "felfil2.txt")
-insert("felmedelane: fel!", "superfeltyp", "felfil3.txt")
-printAllTables()
-    
+      
     
