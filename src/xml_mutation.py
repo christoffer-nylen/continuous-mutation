@@ -36,7 +36,7 @@ class Mutator:
                 node.parentNode.removeChild(node)
 
     def write(self, file_name):
-        file_handle = open(file_name, 'wb')
+        file_handle = open(file_name, 'w', encoding='utf-8')
         self.xmlroot.writexml(file_handle)
         file_handle.close()
 
