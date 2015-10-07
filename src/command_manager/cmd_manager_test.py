@@ -29,7 +29,7 @@ class TestCmdManager(unittest.TestCase):
 
     def testCompileCplusplus(self):
         cmdManager = CommandManager()
-        output, errors = cmdManager.run("gcc", "test_stdout_stderr.cpp")
+        output, errors = cmdManager.run("g++", "test_stdout_stderr.cpp")
         self.assertEqual(output, "")
         self.assertEqual(errors, "")
 
