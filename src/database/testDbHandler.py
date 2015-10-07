@@ -9,29 +9,14 @@ class TestCreater(unittest.TestCase):
     
 
     
-
+    
     def test_insert(self):
-        #sucesstest
-        dbhandler.createDB()    
+        dbhandler.createDB()        
         
-        dbhandler.insert("felmedelane: fel!", "superfeltyp")
-        self.assertEqual(dbhandler.find("felmedelane: fel!"),
-                         [("felmedelane: fel!","superfeltyp")])
+        dbhandler.super_insert("felmedelande", "feltyp")
+        self.assertEqual(dbhandler.find("felmedelande"),
+                    [("felmedelande", "feltyp")])
 
-        #exception
-
-        self.assertEqual(dbhandler.insert("", "superfeltyp"),
-                         "<FAILED> in dbhandler:insert() not enought parameters")
-
-        self.assertEqual(dbhandler.insert("felmedelande", ""),
-                         "<FAILED> in dbhandler:insert() not enought parameters")
-        
-        self.assertEqual(dbhandler.insert("", ""),
-                         "<FAILED> in dbhandler:insert() not enought parameters")
-
-
-    
-    
 if __name__ == "__main__":
     unittest.main()
 

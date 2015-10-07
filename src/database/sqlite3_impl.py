@@ -37,22 +37,30 @@ def createDB():
 
     #db.close()
 
-
-def insert(error_msg, error_type):
-    
+def insert_error_msg(error_msg):
     cursor = db.cursor()
 
     cursor.execute("INSERT OR IGNORE INTO error_msg  (msg) VALUES (?)", (error_msg, ))
-    msg_id = cursor.lastrowid;
+    #msg_id = cursor.lastrowid;
+    db.commit()
+    return cursor.lastrowid; #return msg_id
+
+def insert_error_type(error_type):    
+    cursor = db.cursor()
 
     cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_type, ))
-    type_id = cursor.lastrowid;
+        
+    db.commit()
+    return cursor.lastrowid #retunrn type_id
+    
+def insert_error(msg_id, type_id):
+    cursor = db.cursor()
     
     cursor.execute("INSERT OR IGNORE INTO errors VALUES(?,?)", (msg_id, type_id,))
 
     db.commit()
-    #db.close()
 
+   
 
 def find(_error_msg):
     """
@@ -71,33 +79,18 @@ def find(_error_msg):
     return cursor.fetchall()
 
 
-"""
-def printAllTables():
-
+def get_type_id(_error_type):
     cursor = db.cursor()
 
-    print("ERROR_MSG")
-    cursor.execute("SELECT * FROM error_msg")
-    for row in cursor:
-        print(row)
+    cursor.execute('''SELECT id FROM error_type
+    WHERE type = (?)''', (_error_type,))
 
-    print("ERROR_TYPE")
-    cursor.execute("SELECT * FROM error_type")
-    for row in cursor:
-        print(row)
+    return cursor.fetchone()
 
-    print("FILENAME")
-    cursor.execute("SELECT * FROM filename")
-    for row in cursor:
-        print(row)
-
-
-    print("ERRORS")
-    cursor.execute("SELECT * FROM errors")
-    for row in cursor:
-        print(row)
-"""     
-
-
-      
+def get_msg_id(_error_msg):
+    cursor = db.cursor()
     
+    cursor.execute('''SELECT id FROM error_msg
+    WHERE msg = (?)''', (_error_msg,))
+
+    return cursor.fetchone()
