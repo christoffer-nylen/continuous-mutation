@@ -15,9 +15,9 @@ class TestCmdManager(unittest.TestCase):
         self.assertEqual(output, "")
         self.assertTrue(len(errors) > 0)
 
-    def testScript(self):
+    def testPythonScript(self):
         cmdManager = CommandManager()
-        output, errors = cmdManager.run("python3", "cmd_manager.py")
+        output, errors = cmdManager.run("python3", "test_stdout_stderr.py")
         self.assertEqual(output, "stdout")
         self.assertEqual(errors, "stderr")
 
