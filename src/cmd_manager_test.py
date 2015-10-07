@@ -21,4 +21,10 @@ class TestCmdManager(unittest.TestCase):
         self.assertEqual(output, "stdout")
         self.assertEqual(errors, "stderr")
 
+    def testArguments(self):
+        cmdManager = CommandManager()
+        output, errors = cmdManager.run("cat", "-n", "test_stdout_stderr.py")
+        self.assertTrue(len(output) > 0)
+        self.assertEqual(errors, "")
+
         #We should add more testcases that are more relevant in the future...
