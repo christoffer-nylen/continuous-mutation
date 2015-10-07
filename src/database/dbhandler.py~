@@ -1,9 +1,0 @@
-import sqlite3_impl as DB
-
-
-def createDB():
-    DB.createDB();
-
-def insert(error_msg, error_type):
-    if(error_msg != null && error_type != null):
-        return 1;
