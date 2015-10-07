@@ -27,4 +27,16 @@ class TestCmdManager(unittest.TestCase):
         self.assertTrue(len(output) > 0)
         self.assertEqual(errors, "")
 
+    def testCompileCplusplus(self):
+        cmdManager = CommandManager()
+        output, errors = cmdManager.run("g++", "test_stdout_stderr.cpp")
+        self.assertEqual(output, "")
+        self.assertEqual(errors, "")
+
+    def testRunCplusplus(self):
+        cmdManager = CommandManager()
+        output, errors = cmdManager.run("./a.out")
+        self.assertEqual(output, "stdout")
+        self.assertEqual(errors, "stderr")
+
         #We should add more testcases that are more relevant in the future...
