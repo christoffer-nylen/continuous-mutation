@@ -1,17 +1,23 @@
 import sqlite3
 
+
 """
 tabeler
+----------------
 id, felmedelande
 id, typ av fel
-id, filnamn
-fel_id, typ_id, fil_id
+fel_id, typ_id
 """
 
 db = sqlite3.connect(":memory:")
 
 def createDB():
     cursor = db.cursor()
+
+    cursor.execute("DROP TABLE IF EXISTS error_msg")
+    cursor.execute("DROP TABLE IF EXISTS error_type")
+    cursor.execute("DROP TABLE IF EXISTS errors")
+
 
     cursor.execute('''CREATE TABLE error_msg(
     id INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0, msg TEXT UNIQUE )''')
@@ -21,16 +27,10 @@ def createDB():
     id INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0, type TEXT UNIQUE )''')
 
 
-    cursor.execute('''CREATE TABLE filename(
-    id INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0, name TEXT UNIQUE)''')
-
-
     cursor.execute('''CREATE TABLE errors(
-    msg_id INT, type_id INT, file_id,
+    msg_id INT, type_id INT,
     FOREIGN KEY (msg_id) REFERENCES error_msg(id), 
-    FOREIGN KEY (type_id) REFERENCES error_type(id), 
-    FOREIGN KEY (file_id) REFERENCES filename(id)
-    )''')
+    FOREIGN KEY (type_id) REFERENCES error_type(id))''')
 
 
     db.commit()
@@ -38,7 +38,7 @@ def createDB():
     #db.close()
 
 
-def insert(error_msg, error_type, filename):
+def insert(error_msg, error_type):
     
     cursor = db.cursor()
 
@@ -48,10 +48,7 @@ def insert(error_msg, error_type, filename):
     cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_type, ))
     type_id = cursor.lastrowid;
     
-    cursor.execute("INSERT OR IGNORE INTO filename (name) VALUES (?)", (filename,))
-    file_id = cursor.lastrowid;
-
-    cursor.execute("INSERT OR IGNORE INTO errors VALUES(?,?,?)", (msg_id, type_id, file_id))
+    cursor.execute("INSERT OR IGNORE INTO errors VALUES(?,?)", (msg_id, type_id,))
 
     db.commit()
     #db.close()
@@ -74,7 +71,7 @@ def find(_error_msg):
     return cursor.fetchall()
 
 
-
+"""
 def printAllTables():
 
     cursor = db.cursor()
@@ -99,8 +96,7 @@ def printAllTables():
     cursor.execute("SELECT * FROM errors")
     for row in cursor:
         print(row)
-
-        
+"""     
 
 
       
