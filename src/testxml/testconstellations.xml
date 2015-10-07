@@ -10,15 +10,12 @@
       <lib name="text"/>
       <lib name="types"/>
       <lib name="math"/>
-
       <stub name="hardware_layer">
 	<csu ref="buttons"/>
 	<csu ref="switches"/>
       </stub>
-
       <stub name="control_unit">
       </stub>
-
       <stub name="statistics"></stub>
       <include_csu filename_rel="test_harness.xml"/>
     </harness>

@@ -19,6 +19,7 @@ class Mutator:
     def _find_nodes_helper(self, parent, name, attribute, node_list):
         """ Helper function that recursivly finds a node, given a name and/or attribute """
         for node in parent.childNodes:
+            #print(node)
             if node.nodeType == node.ELEMENT_NODE:
                 if node.tagName == name and attribute in \
                                 dict(node.attributes.items()).values():
@@ -28,12 +29,14 @@ class Mutator:
             self._find_nodes_helper(node, name, attribute, node_list)
         return node_list                
 
-
     def remove_node(self, node_type, attribute_name = None):
         found = self.find_nodes(node_type, attribute_name)
         if found:
             for node in found:
+                sibling = node.previousSibling
+                print(sibling)
                 node.parentNode.removeChild(node)
+                sibling.nodeValue = sibling.nodeValue.strip()
 
     def write(self, file_name):
         file_handle = open(file_name, 'w', encoding='utf-8')
@@ -41,7 +44,8 @@ class Mutator:
         file_handle.close()
 
 mutator = Mutator("testxml/testconstellations.xml")
-found = mutator.find_nodes("stub", "control_unit")
+found = mutator.find_nodes("stub", "statistics")
+
 print(found)
 mutator.remove_node("stub", "control_unit")
 mutator.write("test.xml")
