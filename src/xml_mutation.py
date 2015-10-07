@@ -1,4 +1,6 @@
 from xml.dom.minidom import parse, Node
+from xml.dom import NotFoundErr
+import time
 
 class Mutator:
     def __init__(self, xmlfile):
@@ -6,6 +8,9 @@ class Mutator:
         self.xmlfile = xmlfile
         self.xmltree = parse(xmlfile)
         self.xmlroot = self.xmltree.documentElement
+        self.modified_lines = []
+        self.linenumbers = {}
+        self.store_linenumbers(xmlfile)
 
     def NodeList(self):
         """Returns an empty list used for helper functions"""
@@ -33,19 +38,44 @@ class Mutator:
         found = self.find_nodes(node_type, attribute_name)
         if found:
             for node in found:
-                sibling = node.previousSibling
-                print(sibling)
-                node.parentNode.removeChild(node)
-                sibling.nodeValue = sibling.nodeValue.strip()
+                try:
+                    self.modified_lines.append(str(self.linenumbers[self.convert_node_to_string(node)]))
+                    sibling = node.previousSibling
+                    node.parentNode.removeChild(node)
+                    sibling.nodeValue = sibling.nodeValue.strip()
+                except ValueError as err:
+                    print("ERROR:", err)
 
-    def write(self, file_name):
-        file_handle = open(file_name, 'w', encoding='utf-8')
-        self.xmlroot.writexml(file_handle)
-        file_handle.close()
+    def convert_node_to_string(self, node):
+        str_node = node.toxml('utf-8').strip()
+        return str_node.decode('utf-8').split(sep='\n')[0]
+
+    def remove_attribute(self, node, name):
+        try:
+            node.removeAttribute(name)
+        except NotFoundErr:
+            print("ERROR: Attribute not found.")
+        except AttributeError as err:
+            print("ERROR:", err)
+
+    def store_linenumbers(self, filename):
+        with open(filename, "r") as xmlfile:
+            for linenumber, line in enumerate(xmlfile):
+                self.linenumbers[line.strip()] = linenumber+1
+
+    def generate_filename(self):
+        lines = ','.join(self.modified_lines)
+        file_name = time.strftime("%Y-%m-%d-%H:%M:%S") + "-lines_changed:" + lines
+        print("FILENAME: ", file_name)
+        return file_name
+            
+    def write(self):
+        with open(self.generate_filename(), 'w', encoding='utf-8') as file_handle:
+            self.xmlroot.writexml(file_handle)
 
 mutator = Mutator("testxml/testconstellations.xml")
 found = mutator.find_nodes("stub", "statistics")
-
+mutator.remove_attribute(found, "asdfa")
 print(found)
 mutator.remove_node("stub", "control_unit")
-mutator.write("test.xml")
+mutator.write()
