@@ -1,4 +1,2 @@
-engines: {}
-ratings:
-  paths: []
-exclude_paths: []
+languages:
+   Python: true
