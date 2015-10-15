@@ -14,7 +14,7 @@ class Mutator:
         self.xmlroot = self.xmltree.documentElement
         self.xmlfile_lines_modified = []
         self.xmlfile_linenumbers = {}
-        self.xmlfile.get_linenumbers(xmlfile)
+        self.xmlfile_get_linenumbers(xmlfile)
 
     def NodeList(self):
         """Returns an empty list used for helper functions"""
@@ -86,12 +86,15 @@ class Mutator:
         The filename will consist of a timestamp and the lines that have been modified, in order
         """
         lines_modified = ','.join(self.xmlfile_lines_modified)
-        file_name = time.strftime("%Y-%m-%d-%H:%M:%S") + "-lines_changed:" + lines_modified + '.xml'
-        print("FILENAME: ", file_name)
+        timestamp = time.strftime("%Y-%m-%d-%H:%M:%S")
+        file_type = ".xml"
+        file_name = "{0}-lines_changed:{1}{2}".format(timestamp, lines_modified, file_type)
         return file_name
             
     def write(self):
-        """ Write xml to disk using a generated filename """
+        """
+        Write xml to disk using a generated filename
+        """
         with open(self.generate_filename(), 'w', encoding='utf-8') as file_handle:
             self.xmlroot.writexml(file_handle)
 
