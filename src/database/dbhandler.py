@@ -1,5 +1,10 @@
 import sqlite3_impl as DB
 
+"""
+middlehand for sql commands.
+Relevant function: insert, find 
+se functions for more info
+"""
 
 def createDB():    
     DB.createDB();
@@ -37,7 +42,8 @@ def get_error_type_id(type):
 
 def insert(error_msg, error_type):
     """
-    insert to sql
+    insert to sql if not exists. 
+    Connect error_msg and error_type in errors tabel if relation not already exists  
     """
     msg_id = get_error_msg_id(error_msg)
     if(msg_id == None):

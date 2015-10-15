@@ -2,6 +2,10 @@ import sqlite3
 
 
 """
+SQLite3 implementation module. 
+Don't call this function directly, use db_handler to interact with database.
+
+
 tabeler:kolumner
 ----------------
 error_msg: id, felmedelande
