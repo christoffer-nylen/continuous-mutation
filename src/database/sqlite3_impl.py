@@ -2,11 +2,11 @@ import sqlite3
 
 
 """
-tabeler
+tabeler:kolumner
 ----------------
-id, felmedelande
-id, typ av fel
-fel_id, typ_id
+error_msg: id, felmedelande
+error_type: id, typ av fel
+errors: fel_id, typ_id
 """
 
 db = sqlite3.connect(":memory:")
@@ -30,7 +30,8 @@ def createDB():
     cursor.execute('''CREATE TABLE errors(
     msg_id INT, type_id INT,
     FOREIGN KEY (msg_id) REFERENCES error_msg(id), 
-    FOREIGN KEY (type_id) REFERENCES error_type(id))''')
+    FOREIGN KEY (type_id) REFERENCES error_type(id),
+    PRIMARY KEY (msg_id, type_id))''')
 
 
     db.commit()
@@ -49,6 +50,7 @@ def insert_error_type(error_type):
     cursor = db.cursor()
 
     cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_type, ))
+
         
     db.commit()
     return cursor.lastrowid #retunrn type_id
@@ -57,7 +59,7 @@ def insert_error(msg_id, type_id):
     cursor = db.cursor()
     
     cursor.execute("INSERT OR IGNORE INTO errors VALUES(?,?)", (msg_id, type_id,))
-
+    
     db.commit()
 
    
@@ -65,7 +67,7 @@ def insert_error(msg_id, type_id):
 def find(_error_msg):
     """
     find error type by error msg. Returns list with all related error types
-    [{error_msg},{error_type}]
+    [(<error_msg>,<error_type>)]
     """
     cursor = db.cursor()
 
@@ -85,7 +87,11 @@ def get_type_id(_error_type):
     cursor.execute('''SELECT id FROM error_type
     WHERE type = (?)''', (_error_type,))
 
-    return cursor.fetchone()
+    result  = cursor.fetchone()
+
+    if result is not None:
+        return result[0]
+    return result
 
 def get_msg_id(_error_msg):
     cursor = db.cursor()
@@ -93,4 +99,8 @@ def get_msg_id(_error_msg):
     cursor.execute('''SELECT id FROM error_msg
     WHERE msg = (?)''', (_error_msg,))
 
-    return cursor.fetchone()
+    result  = cursor.fetchone()
+
+    if result is not None:
+        return result[0]
+    return result
