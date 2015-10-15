@@ -46,7 +46,8 @@ class Filter:
         if match:
             return self.parse_line_from(match)
 
-        match = re.search("^([^:]+):(?:((?:\d+:)?\d+):)?(?:(error|warning|note):)?(.+)$", line)
+        match = re.search(("^([^:]+):(?:((?:\d+:)?\d+):)?"
+                           "(?:(error|warning|note):)?(.+)$"), line)
         if match:
             return self.parse_line_err(match)
 
@@ -93,7 +94,7 @@ class Filter:
 
     def parse_line_from(self, match):
         """
-        Function for parsing lines containing "from", like "included from file".
+        Function for parsing lines containing "from", like "included from file"
         This function should only be called from parse_line
         """
         self.line = match.group(3)
@@ -108,7 +109,8 @@ class Filter:
         if self.filename is None or self.line is None:
             return ""
         else:
-            return "{} {}:{}{}\n".format(self.message, self.filename, self.line, self.eoli)
+            return "{} {}:{}{}\n".format(self.message, self.filename,
+                                         self.line, self.eoli)
 
     def parse_line_err(self, match):
         """
@@ -147,11 +149,14 @@ class Filter:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Filter g++ output")
     parser.add_argument("-E", "--no-only-error", dest="only_error",
-                        default=True, action="store_false", help="Show more info than just error")
+                        default=True, action="store_false",
+                        help="Show more info than just error")
     parser.add_argument("-n", "--no-namespaces", dest="remove_namespaces",
-                        default=False, action="store_true", help="Remove namespaces")
+                        default=False, action="store_true",
+                        help="Remove namespaces")
     parser.add_argument("-p", "--no-path", dest="remove_path",
-                        default=False, action="store_true", help="Remove filepath")
+                        default=False, action="store_true",
+                        help="Remove filepath")
     args = parser.parse_args()
 
     print(Filter(args).parse(sys.stdin), end="")
