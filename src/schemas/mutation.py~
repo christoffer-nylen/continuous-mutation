@@ -1,0 +1,5 @@
+import xml.etree.ElementTree as parser
+
+file = parser.parse("testconstellations.xsd")
+root = file.getRoot()
+print(root)
