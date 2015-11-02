@@ -1,4 +1,4 @@
-import sqlite3_impl as DB
+from database import sqlite3_impl as DB
 
 """
 middlehand for sql commands.
