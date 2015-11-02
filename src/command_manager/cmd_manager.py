@@ -1,5 +1,6 @@
 import subprocess
 
+
 class CommandManager:
     def run(self, command, *args):
         list = [command]
