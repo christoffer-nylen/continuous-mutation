@@ -1,5 +1,5 @@
 import sqlite3
-
+#todo: add data-type validations in all inserts and get
 
 """
 SQLite3 implementation module. 
@@ -50,10 +50,11 @@ def insert_error_msg(error_msg):
     db.commit()
     return cursor.lastrowid; #return msg_id
 
-def insert_error_type(error_type):    
+def insert_error_type(error_types):    
     cursor = db.cursor()
-
-    cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_type, ))
+    
+    for error in error_types:            
+        cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error, ))
 
         
     db.commit()
@@ -88,6 +89,8 @@ def find(_error_msg):
 def get_type_id(_error_type):
     cursor = db.cursor()
 
+    _error_type = "".join(_error_type)
+    print("sqlite3_impl.py::get_type_id: " + _error_type)
     cursor.execute('''SELECT id FROM error_type
     WHERE type = (?)''', (_error_type,))
 
@@ -108,3 +111,26 @@ def get_msg_id(_error_msg):
     if result is not None:
         return result[0]
     return result
+
+def print_error_msg_table():
+    cursor = db.cursor()
+
+    cursor.execute("SELECT * FROM error_msg")
+    
+    return cursor.fetchall()
+
+
+def print_error_type_table():
+    cursor = db.cursor()
+
+    cursor.execute("SELECT * FROM error_type")
+    
+    return cursor.fetchall()
+
+
+def print_error_table():
+    cursor = db.cursor()
+
+    cursor.execute("SELECT * FROM errors")
+    
+    return cursor.fetchall()
