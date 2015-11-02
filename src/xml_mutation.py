@@ -108,7 +108,7 @@ class Mutator:
         file_type = ".xml"
         file_name = "{0}{1}".format(timestamp, file_type)
         return file_name
-            
+
     def write(self, filename):
         """
         Write xml to disk using a generated filename
@@ -120,19 +120,21 @@ class Mutator:
         mutated_nodes = []
         for node in self.find_nodes():
             mutated_node = self.remove_node(node)
-            filename = mutated_node[0] # first tuple index is the filename
-            #self.write(filename)
+            filename = mutated_node[0]
             mutated_nodes.append(mutated_node)
+
             print("Removing from:", node.parentNode, " child:", node)
-            node.parentNode.removeChild(node)
-            self.initXMLTree()
+            sibling = node.nextSibling
+            parent = node.parentNode
+
+            parent.removeChild(node)
+            self.write(filename)
+
+            parent.insertBefore(node, sibling)
+
         return mutated_nodes
     
-mutator = Mutator("testxml/testconstellations.xml")
+mutator = Mutator("../testxml/testconstellations.xml")
 return_list = mutator.begin_mutation()
 for touple in return_list:
     print(touple)
-
-""" Because we remove a node each time, there will be fewer parentNodes to traverse, this results in
-a behaviour we dont want. Going recursivly upwards from a node to its root will not work unless
-we can find some way to re-parse the whole tree structure i.e "restoring" the tree after each removal so that we can continue removing one node at a time. I have tried to do this but i believe the "old" DOM structure is still used although i try to re-initialize the tree." Doing downward recursion might solve the issue. Or atleast i think so."
