@@ -10,26 +10,31 @@ class XmlMutationTests(unittest.TestCase):
     def tearDown(self):
         self.mutator = None
 
-    def test_find_node(self):
-        found = self.mutator.find_nodes("stub", "statistics")
-        self.assertEqual('<stub name="statistics"/>', found[0].toxml())
-
-    def test_remove_node(self):
-        self.mutator.remove_node("stub", "control_unit")
-        found = self.mutator.find_nodes("stub", "control_unit")
-        self.assertEqual(len(found), 0)
-
-    def test_remove_attribute(self):
-        found = self.mutator.find_nodes("regression_type", "integration")
-        self.mutator.remove_attribute(found[0], "integration")
-        #print("ARGS:", self.mutator.remove_attribute(found[0], "integration").args)
-        self.assertEqual(self.mutator.remove_attribute(found[0], "integration").code, xml.dom.NOT_FOUND_ERR)
-
-    def test_remove_non_existing_attribute(self):
-        found = self.mutator.find_nodes("lib", "text")
-        self.assertEqual(len(found), 1)
-        self.assertEqual(self.mutator.remove_attribute(found[0], "doesNotExist").code, xml.dom.NOT_FOUND_ERR)
+    def test_node_list(self):
+        list = self.mutator.node_list()
+        self.assertEqual(0, len(list))
     
+    def test_find_nodes(self):
+        all_nodes = self.mutator.find_nodes()
+        self.assertEqual('<testconstellation name="user_interface_test">', self.mutator.convert_node_to_string(all_nodes[0]))
+    
+    def test_generate_node_path(self):
+        all_nodes = self.mutator.find_nodes()
+        node_path = self.mutator.generate_node_path(all_nodes[2])
+        self.assertEqual(self.mutator.convert_node_to_string(all_nodes[2]), node_path[0])
+        self.assertEqual(self.mutator.convert_node_to_string(all_nodes[0]), node_path[len(node_path)-1])
+        
+    def test_convert_node_to_string(self):
+        all_nodes = self.mutator.find_nodes()
+        str_node = self.mutator.convert_node_to_string(all_nodes[0])
+        self.assertEqual('<testconstellation name="user_interface_test">', self.mutator.convert_node_to_string(all_nodes[0]))
 
+    def test_begin_mutation(self):
+        all_nodes = self.mutator.find_nodes()
+        for index, mutated_node in enumerate(self.mutator.begin_mutation()):
+            self.assertEqual(self.mutator.convert_node_to_string(all_nodes[index]), mutated_node[0])
+        
+    
 if __name__ == '__main__':
     unittest.main()
+
