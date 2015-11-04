@@ -24,7 +24,7 @@ def startup():
 
 def run_mutation_on_file(original_file):
                                                                                                                                          
-    #xml_file_list = [(filename, [node, parent ...]), (filename, [node, parent ...])]                                                     
+    #structure of xml_file_list = [(filename, [node, parent ...]), (filename, [node, parent ...])]                                                     
     #xml_file_list = xml_mutation.get_xml_file_list(original_file)                                                                         
      
     #for test:
@@ -33,8 +33,9 @@ def run_mutation_on_file(original_file):
                       ("testxml_5.xml", ["nod5"])]
                                                                                                                                      
     for filename, node_list in xml_file_list:                                                                                             
-        #load filename                                                                                                                    
-        try:                                                                                                                              
+        #load filename   
+        print("FILENAME: " + filename)
+        try:  
             xml_file = open("dummy_classes/" + filename)                                                                                                         
         except IOError:                                                                                                                   
             print("Error in mainModule: Could not oppen file")                                                                            
@@ -43,12 +44,15 @@ def run_mutation_on_file(original_file):
         
         #CommandManager.run fångar felmeddelande från terminalen
         cmdManger = CommandManager()
-        output, error_message = cmdManger.run("g++", test_execute.executeXML(xml_file))        
+        output, error_message = cmdManger.run("g++", "dummy_classes/" + filename) #test_execute.executeXML(xml_file))        
         
 
         #Om felmeddelande, dvs fel uppkomm -> spara
         if(error_message != ""):            
             #insert to db
+            print("mainModule.py DB INSERT")
+            print("error_msg: " + error_message)
+            print("error_type: " + " ".join(node_list))
             dbhandler.insert(error_message, node_list)
 
 
@@ -75,5 +79,5 @@ def compilate_with_error_support(filename):
         for node in possible_nodes:
             print(node)
 
-startup()        
-run_mutation_on_file("lol")
+#startup()        
+#run_mutation_on_file("lol")

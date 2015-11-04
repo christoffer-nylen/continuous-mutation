@@ -63,5 +63,19 @@ def find(error_msg):
     """    
     return  DB.find(error_msg)    
 
+def print_all_tables():
+    print(DB.print_error_msg_table())
+    print(DB.print_error_type_table())
+    print(DB.print_error_table())
+
+
+def print_msg_table():
+    print(DB.print_error_msg_table())
+
+def print_type_table():
+    print(DB.print_error_type_table())
+
+def print_error_table():
+    print(DB.print_error_table())
 
 
