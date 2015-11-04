@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?> 
 <testconstellations>
   <testconstellation name="user_interface_test">
     <regression_type name="integration"/>
@@ -9,17 +10,12 @@
       <lib name="text"/>
       <lib name="types"/>
       <lib name="math"/>
-
       <stub name="hardware_layer">
 	<csu ref="buttons"/>
 	<csu ref="switches"/>
       </stub>
-
-      <stub name="control_unit">
-      </stub>
-
-      <stub name="statistics">
-      </stub>
+      <stub name="control_unit"></stub>
+      <stub name="statistics"></stub>
       <include_csu filename_rel="test_harness.xml"/>
     </harness>
   </testconstellation>
