@@ -13,7 +13,7 @@ error_type: id, typ av fel
 errors: fel_id, typ_id
 """
 
-db = sqlite3.connect(":memory:")
+db = sqlite3.connect("testDB.sql")
 
 def createDB():
     cursor = db.cursor()

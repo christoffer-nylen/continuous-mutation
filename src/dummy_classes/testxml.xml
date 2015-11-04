@@ -4,6 +4,7 @@
     <regression_type name="integration"/>
     <tested_object>      
       <test ref="Feline.cc"/>
+      <test ref="Animal.cc"/>
     </tested_object>
     <harness>
       <test ref="Canine.cc"/>

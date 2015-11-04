@@ -108,8 +108,3 @@ class Mutator:
             
             parent.insertBefore(node, sibling)
         return mutated_nodes
-    
-mutator = Mutator("testxml/testconstellations.xml")
-return_list = mutator.begin_mutation()
-for tuple in return_list:
-    print(tuple)

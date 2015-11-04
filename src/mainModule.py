@@ -2,7 +2,7 @@ from database import dbhandler
 from command_manager.cmd_manager import CommandManager
 from python_filter import pyfilter 
 from dummy_classes import test_execute
-
+from xml_mutation.xml_mutation import Mutator
 """
 struktur
 --------
@@ -25,18 +25,20 @@ def startup():
 def run_mutation_on_file(original_file):
                                                                                                                                          
     #structure of xml_file_list = [(filename, [node, parent ...]), (filename, [node, parent ...])]                                                     
-    #xml_file_list = xml_mutation.get_xml_file_list(original_file)                                                                         
+    mutator = Mutator(original_file)
+    xml_file_list = mutator.begin_mutation()
      
     #for test:
+    """
     xml_file_list = [("testxml.xml", ["paron/nod1"]), ("paron/testxml_2.xml", ["nod2"]),
                       ("testxml_3.xml", ["nod3"]), ("testxml_4.xml", ["nod4"]),
                       ("testxml_5.xml", ["nod5"])]
-                                                                                                                                     
+    """                                                                                                                                     
     for filename, node_list in xml_file_list:                                                                                             
         #load filename   
         print("FILENAME: " + filename)
         try:  
-            xml_file = open("dummy_classes/" + filename)                                                                                                         
+            xml_file = open(filename)                                                                                                         
         except IOError:                                                                                                                   
             print("Error in mainModule: Could not oppen file")                                                                            
             continue #try next filename                                                                                                   
@@ -44,7 +46,7 @@ def run_mutation_on_file(original_file):
         
         #CommandManager.run fångar felmeddelande från terminalen
         cmdManger = CommandManager()
-        output, error_message = cmdManger.run("g++", "dummy_classes/" + filename) #test_execute.executeXML(xml_file))        
+        output, error_message = cmdManger.run("g++", filename) #test_execute.executeXML(xml_file))        
         
 
         #Om felmeddelande, dvs fel uppkomm -> spara
