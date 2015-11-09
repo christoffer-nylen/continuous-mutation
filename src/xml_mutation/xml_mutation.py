@@ -4,15 +4,17 @@ from xml.dom.minidom import parse, Node
 from xml.dom import NotFoundErr
 from datetime import datetime
 
+
 """
 Class for mutating a given xml file
 """
+
 
 class Mutator:
     ##
     # @param xmlfile The xml file that is going to be mutated.
     def __init__(self, xmlfile):
-        """ 
+        """
         Init the Mutator class object
         store a parsed given xml file
         and the root node
@@ -43,7 +45,7 @@ class Mutator:
     ##
     # @returns A list with all nodes found in the xml tree.
     def find_nodes(self):
-        """ 
+        """
         Recursivly find all nodes
         """
         return self._find_nodes_helper(self.xmlroot, self.node_list())
@@ -56,17 +58,17 @@ class Mutator:
         """
         for node in parent.childNodes:
             if node.nodeType == node.ELEMENT_NODE:
-                node_list.append(node)                               
+                node_list.append(node)
             self._find_nodes_helper(node, node_list)
-        return node_list                
+        return node_list
 
     ##
     # @param node A specified node which a path is generated from.
     # @returns A list with the genareted path to the root node from the specified node.
     def generate_node_path(self, node):
-        """ 
+        """
         This function generates the node path.
-        A list is returned with the node's path to the root node, 
+        A list is returned with the node's path to the root node,
         not including the root.
         """
         try:
@@ -76,7 +78,7 @@ class Mutator:
         except ValueError as err:
             print("ERROR:", err)
 
-    ##      
+    ##
     # @param parent The parent node of the previous node.
     # @param path_to_root_list A list which all nodes from the generated path are saved in.
     # @returns A  list containing all nodes to the root.
@@ -84,7 +86,7 @@ class Mutator:
         """
         Helper function that builds the path from the node up to the root (not including the root).
         """
-        if parent != None and parent != self.xmlroot:
+        if parent is not None and parent is not self.xmlroot:
             node_to_string = self.convert_node_to_string(parent)
             path_to_root_list.append(node_to_string)
             self._generate_node_path_helper(parent.parentNode, path_to_root_list)
@@ -101,6 +103,7 @@ class Mutator:
         return str_node.decode('utf-8').split(sep='\n')[0]
     ##
     # @param filename The filename that the xml is written to.
+
     def write(self, filename):
         """
         Write xml to disk.
@@ -110,15 +113,14 @@ class Mutator:
                 self.xmlroot.writexml(file_handle)
         except EnvironmentError as error:
             print(error)
-            
-                
+
     def begin_mutation(self):
-        """ 
+        """
         Mutates a given xml file by removing one node at a time, one after eachother.
         the function yields a touple containing the node affected, a timestamp for the
         modified xml file and the path from the node to the root of the document.
         """
-    
+
         for node in self.find_nodes():
             mutated_node = self.generate_node_path(node)
             filename = mutated_node[0]
@@ -128,7 +130,7 @@ class Mutator:
             # so that we can insert the node back in its place. This is to not
             # mess with the integrity of the DOM structure for nodes that are to
             # be removed after this one.
-            
+
             sibling = node.nextSibling
             parent = node.parentNode
             parent.removeChild(node)
