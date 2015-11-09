@@ -6,15 +6,7 @@ Install doxypy:
 
       apt-get install doxypy
 
-Second:
-You have to stand in the same folder as
-the Doxyfile file which is located in the same
-folder as the src and doc folders and run the
-following command:
-
-      doxygen
-
-Third (Optional):
+Second (Optional):
 If graphs over the hierarchy in the project is
 requested, the following command need to be
 included. If this is not installed doxygen will
@@ -25,6 +17,14 @@ the documentation:
 
       apt-get install graphviz
 
+Third:
+You have to stand in the same folder as
+the Doxyfile file which is located in the
+same folder were the src folder is located.
+Then run the following command:
+
+      doxygen
+
 Forth:
 To see the generated documentation an index.html
 file is now generated. This file can be located
@@ -34,8 +34,8 @@ in your favorite browser.
 
 Good to know:
 If documentation was generated and changes to the
-code was done and new documentation is going to
-be generated. To ensure that the changes done to
-the code is included in the documentation, you
-should remove everything under doc/ before
-running the doxygen command again.
+code was done and you want to generate new documentation,
+to ensure that the changes done to
+the code is included in the new documentation, you
+should remove the doc folder before running the doxygen
+command again.
