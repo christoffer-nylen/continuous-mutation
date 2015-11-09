@@ -22,32 +22,16 @@ for
 def startup():
     dbhandler.createDB();
 
-def run_mutation_on_file(original_file):
-                                                                                                                                         
-    #structure of xml_file_list = [(filename, [node, parent ...]), (filename, [node, parent ...])]                                                     
-    mutator = Mutator(original_file)
-    xml_file_list = mutator.begin_mutation()
-     
-    #for test:
-    """
-    xml_file_list = [("testxml.xml", ["paron/nod1"]), ("paron/testxml_2.xml", ["nod2"]),
-                      ("testxml_3.xml", ["nod3"]), ("testxml_4.xml", ["nod4"]),
-                      ("testxml_5.xml", ["nod5"])]
-    """                                                                                                                                     
-    for filename, node_list in xml_file_list:                                                                                             
-        #load filename   
-        print("FILENAME: " + filename)
-        try:  
-            xml_file = open(filename)                                                                                                         
-        except IOError:                                                                                                                   
-            print("Error in mainModule: Could not oppen file")                                                                            
-            continue #try next filename                                                                                                   
-                                                                    
+def run_mutation_on_file(filename):
+    
+    mutator = Mutator(filename)
+    for node_list in mutator.begin_mutation():                                                                                             
         
         #CommandManager.run fångar felmeddelande från terminalen
         cmdManger = CommandManager()
-        output, error_message = cmdManger.run("g++", filename) #test_execute.executeXML(xml_file))        
-        
+        output, error_message = cmdManger.run("g++", filename)
+
+        print("NODELIST: " , node_list)
 
         #Om felmeddelande, dvs fel uppkomm -> spara
         if(error_message != ""):            
