@@ -15,29 +15,22 @@ class Filter:
         self.error_type = "Compilation Error"
         self.signal_eof = False
 
+    ##
+    # @param source Given source, e.g. sys.stdin
+    # @returns A string containing the parse output
     def parse(self, source):
         """
         Parses given source
-
-        Args:
-            source:     Given source, e.g. sys.stdin
-
-        Returns:
-            A string containing the parse output
-
         """
         return_value = "".join(self.parse_line(line) for line in source)
         return "\n".join([self.error_type, return_value])
 
+    ##
+    # @param line String to parse
+    # @returns A string containing the parse output
     def parse_line(self, line):
         """
         Parse line of file
-
-        Args:
-            line:       String to parse
-
-        Returns:
-            A string containing the parse output
         """
         if self.signal_eof:
             return ""
