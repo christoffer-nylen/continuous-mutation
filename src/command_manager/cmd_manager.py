@@ -1,11 +1,35 @@
 import subprocess
-
+import sys
+import select
+import os
 
 class CommandManager:
     def run(self, command, *args):
+        out = []
+        err = []
         list = [command]
         for arg in args:
             list.append(arg)
-        p = subprocess.Popen(list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate()
-        return out.decode('unicode_escape'), err.decode('unicode_escape')
+
+        with subprocess.Popen(list, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
+            readable = {
+                p.stdout.fileno(): sys.stdout.buffer,
+                p.stderr.fileno(): sys.stderr.buffer
+            }
+
+            while readable:
+                for fd in select.select(readable, [], [])[0]:
+                    data = os.read(fd, 1024)
+                    if not data:
+                        del readable[fd]
+                    else:
+                        if fd == p.stdout.fileno():
+                            sys.stdout.write(data.decode('unicode_escape'))
+                            out.append(data.decode('unicode_escape'))
+                        if fd == p.stderr.fileno():
+                            sys.stderr.write(data.decode('unicode_escape'))
+                            err.append(data.decode('unicode_escape'))
+
+        p.stdout.close()
+        p.stderr.close()
+        return ''.join(out), ''.join(err)
