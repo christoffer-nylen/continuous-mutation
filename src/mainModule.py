@@ -1,3 +1,6 @@
+#! /usr/bin/env python3
+
+import sys
 from database import dbhandler
 from command_manager.cmd_manager import CommandManager
 from python_filter import pyfilter 
@@ -40,3 +43,7 @@ def run_mutation_on_file(filename):
             print("error_type: " + " ".join(node_list))
             dbhandler.insert(error_message, node_list)
 
+if __name__ == "__main__":
+    dbhandler.createDB()
+    for arg in sys.argv[1:]:
+        run_mutation_on_file(arg)
