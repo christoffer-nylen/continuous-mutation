@@ -1,6 +1,6 @@
 from database import dbhandler
 from command_manager.cmd_manager import CommandManager
-from python_filter import pyfilter 
+from python_filter.pyfilter import Filter 
 from dummy_classes import test_execute
 from xml_mutation.xml_mutation import Mutator
 """
@@ -9,9 +9,7 @@ struktur
 
 ladda nodmängd
 
-for
-
-  xml-mutation
+for nod in xml-mutation
   kör xml
   manpiluera felmeddelande
   insert to db
@@ -23,47 +21,36 @@ def startup():
     dbhandler.createDB();
 
 def run_mutation_on_file(filename):
-    
+    print("run mutation on", filename)
     mutator = Mutator(filename)
-    for node_list in mutator.begin_mutation():                                                                                             
+    prettyFilter = Filter()
+    for node_list in mutator.begin_mutation():
+        try:
+            print("NODELIST: " , node_list)
+            #CommandManager.run fångar felmeddelande från terminalen
+            cmdManger = CommandManager()
+            output, error_message = cmdManger.run("g++", filename)
+            """
+            cmdManger.run("mbede-generator", "-l")
+            cmdManger.run("make", "makefiles")
+            output, error_message = cmdManger.run("make")#, target)
+            """
         
-        #CommandManager.run fångar felmeddelande från terminalen
-        cmdManger = CommandManager()
-        output, error_message = cmdManger.run("g++", filename)
+            #Om felmeddelande, dvs fel uppkomm -> spara
+            if(error_message != ""):            
+                #insert to db
+                print("mainModule.py DB INSERT")
+                print("error_msg: " + error_message)
+                print("error_type: " + " ".join(node_list))
+                error_message_pretty = prettyFilter.parse(error_message) 
+                #reverse order of nodes. Parent...node
+                node_list = node_list[::-1]
+                dbhandler.insert(error_message_pretty, node_list)
 
-        print("NODELIST: " , node_list)
+        except:
+            #if something goes wrong continue to next mutation
+            continue
+            
 
-        #Om felmeddelande, dvs fel uppkomm -> spara
-        if(error_message != ""):            
-            #insert to db
-            print("mainModule.py DB INSERT")
-            print("error_msg: " + error_message)
-            print("error_type: " + " ".join(node_list))
-            dbhandler.insert(error_message, node_list)
-
-
-def compilate_with_error_support(filename):
-    """
-    #fetch felmeddelande
-    output, error_message = CommandManager.run(Christoffers kod as string)        
-    """    
-
-    #print terminal output to help error tracing
-    print(output)
-
-    #fel uppkom, kolla i db efter matchande fel och returnera nod och snyggt felmdellande
-    if(error_message != ""):
-        #snygga till felmeddelande
-        error_message_pretty = Filter.parse(error_message)
-        print("FELMEDDELANDE")
-        print(error_message_pretty)
-
-        #fetch all matching error_message from db
-        possible_nodes = dbhandler.find(error_message)
-        
-        print("Following node(s) may be needed:")
-        for node in possible_nodes:
-            print(node)
-
-#startup()        
-#run_mutation_on_file("lol")
+startup()
+run_mutation_on_file("dummy_classes/testxml.xml")
