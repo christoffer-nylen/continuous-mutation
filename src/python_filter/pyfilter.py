@@ -7,13 +7,15 @@ import fileinput
 
 
 class Filter:
-    def __init__(self, args):
-        self.remove_path = args.remove_path
-        self.remove_namespaces = args.remove_namespaces
-        self.only_error = args.only_error
+    def __init__(self):
 
+        self.remove_path = False
+        self.remove_namespaces = False
+        self.only_error = True
+            
         self.error_type = "Compilation Error"
         self.signal_eof = False
+       
 
     def parse(self, source):
         """
