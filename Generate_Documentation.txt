@@ -1,0 +1,41 @@
+To generate documentation for the python files
+the following has to be done:
+
+First:
+Install doxypy:
+
+      apt-get install doxypy
+
+Second:
+You have to stand in the same folder as
+the Doxyfile file which is located in the same
+folder as the src and doc folders and run the
+following command:
+
+      doxygen
+
+Third (Optional):
+If graphs over the hierarchy in the project is
+requested, the following command need to be
+included. If this is not installed doxygen will
+give errors while trying to parse the graph part
+of the documentation. These errors can be ignored
+due to they are not interfering with the rest of
+the documentation:
+
+      apt-get install graphviz
+
+Forth:
+To see the generated documentation an index.html
+file is now generated. This file can be located
+in the doc/html folder. Open this index.html file
+in your favorite browser.
+
+
+Good to know:
+If documentation was generated and changes to the
+code was done and new documentation is going to
+be generated. To ensure that the changes done to
+the code is included in the documentation, you
+should remove everything under doc/ before
+running the doxygen command again.
