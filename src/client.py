@@ -16,8 +16,7 @@ def run_with_error_support(command):
         List of strings of matching errors
     """
     _, error = command_manager.cmd_manager.CommandManager.run(None, command[0], *command[1:])
-    error = error.rstrip()
-    if error == "":
+    if error.rstrip() == "":
         return []
 
     try:
@@ -30,8 +29,13 @@ if __name__ == "__main__":
     command = sys.argv[1:]
     possible_errors = run_with_error_support(command)
     if possible_errors == []:
-        print("{}: No matching errors found in database".format(sys.argv[0]))
+        print("\n{}: No matching errors found in database".format(sys.argv[0]))
+        sys.exit(0)
+
+    if len(possible_errors) == 1:
+        print("\n{}: Possibly caused by this missing tag:".format(sys.argv[0]))
     else:
-        print("{}: Matching errors:".format(sys.argv[0]))
-        for error in possible_errors:
-            print(error)
+        print("\n{}: Possibly caused by any of these missing tags:".format(sys.argv[0]))
+
+    for error in possible_errors:
+        print(*error[1:])
