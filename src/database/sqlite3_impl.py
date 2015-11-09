@@ -49,9 +49,10 @@ def insert_error_msg(error_msg):
 
 def insert_error_type(error_types):    
     cursor = db.cursor()
-    
-    for error in error_types:            
-        cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error, ))
+
+    #saves node with all parents as an entry
+    error_types = "".join(error_types)
+    cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_types, ))
 
     db.commit()
     return cursor.lastrowid
