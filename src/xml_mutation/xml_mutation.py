@@ -1,3 +1,5 @@
+import xml.parsers.expat
+from contextlib import contextmanager
 from xml.dom.minidom import parse, Node
 from xml.dom import NotFoundErr
 from datetime import datetime
@@ -10,21 +12,25 @@ class Mutator:
         and the root node
         """
         self.xmlfile = xmlfile
-        self.initXMLTree()
+        self.init_XML_tree()
         self.xmlfile_node_list = []
             
-    def NodeList(self):
+    def node_list(self):
         """Returns an empty list used for helper functions"""
         node_list = []
         return node_list
 
-    def initXMLTree(self):
-        self.xmltree = parse(self.xmlfile)
-        self.xmlroot = self.xmltree.documentElement
+    def init_XML_tree(self):
+        try:
+            self.xmltree = parse(self.xmlfile)
+            self.xmlroot = self.xmltree.documentElement
+        except xml.parsers.expat.ExpatError as e:
+            return e.arg(0)
+
     
     def find_nodes(self):
         """ Recursivly find all nodes"""
-        return self._find_nodes_helper(self.xmlroot, self.NodeList())
+        return self._find_nodes_helper(self.xmlroot, self.node_list())
 
     def _find_nodes_helper(self, parent, node_list):
         """
@@ -38,14 +44,13 @@ class Mutator:
 
     def generate_node_path(self, node):
         """ This function generates the node path.
-        A tuple is returned with a generated filename and the node together with its path to the root.
+        A tuple is returned with a generated filename
+        and the node together with its path to the root.
         """
         try:
-            path_to_node = self._generate_node_path_helper(node.parentNode, self.NodeList())
+            path_to_node = self._generate_node_path_helper(node.parentNode, self.node_list())
             path_to_node.insert(0, self.convert_node_to_string(node))
-            generated_filename = self.generate_filename()
-            tuple_node_context = (generated_filename, path_to_node)
-            return tuple_node_context
+            return path_to_node
         except ValueError as err:
             print("ERROR:", err)
           
@@ -67,32 +72,26 @@ class Mutator:
         str_node = node.toxml('utf-8').strip()
         return str_node.decode('utf-8').split(sep='\n')[0]
 
-    def generate_filename(self):
-        """ 
-        Generate a filename for a modified xml.
-        """
-        time = datetime.now()
-        timestamp = time.strftime("%H:%M:%S.%f")
-        file_type = ".xml"
-        file_name = "{0}{1}".format(timestamp, file_type)
-        return file_name
-
     def write(self, filename):
         """
         Write xml to disk.
         """
-        with open(filename, 'w', encoding='utf-8') as file_handle:
-            self.xmlroot.writexml(file_handle)
-
+        try:
+            with open(filename, 'w', encoding='utf-8') as file_handle:
+                self.xmlroot.writexml(file_handle)
+        except EnvironmentError as error:
+            print(error)
+            
+                
     def begin_mutation(self):
         """ Mutates a given xml file by removing one node at a time, one after eachother.
-        the function returns a list containing the node affected, a timestamp for the modified xml file and the path
-        from the node to the root of the document. """
-        mutated_nodes = []
+        the function yields a touple containing the node affected, a timestamp for the
+        modified xml file and the path from the node to the root of the document.
+        """
+    
         for node in self.find_nodes():
             mutated_node = self.generate_node_path(node)
             filename = mutated_node[0]
-            mutated_nodes.append(mutated_node)
 
             # We need to remove a node and write a new xml file for this specific
             # mutation. Therefore we need to have a reference to a sibling node
@@ -103,8 +102,8 @@ class Mutator:
             sibling = node.nextSibling
             parent = node.parentNode
             parent.removeChild(node)
-
-            self.write(filename)
-            
+            self.write(self.xmlfile)
+            yield mutated_node
             parent.insertBefore(node, sibling)
-        return mutated_nodes
+
+        self.write(self.xmlfile)
