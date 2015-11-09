@@ -1,5 +1,4 @@
 #! /usr/bin/env python3
-
 import sys
 from database import dbhandler
 from command_manager.cmd_manager import CommandManager
@@ -49,7 +48,8 @@ def run_mutation_on_file(filename):
             print("NODELIST: " , node_list)
             #CommandManager.run catch error_messages
             cmdManager = CommandManager()
-            output, error_message = cmdManger.run("g++", filename)
+            output, error_message = cmdManager.run("g++", filename)
+            print("error_message: " , error_message)
 
             """
             Insert procedure for generating and building makefiles
@@ -70,18 +70,17 @@ def run_mutation_on_file(filename):
 
             #If error occures saved the errmsg in db
             if error_message != "":
-
+                print("ERROR")
                 error_message_pretty = prettyFilter.parse(error_message) 
                 #reverse order of nodes. Parent... node
                 node_list = node_list[::-1]
-
                 print("mainModule.py DB INSERT")
                 print("error_msg: " + error_message_pretty)
-                print("error_type: " + " ".join(node_list)
-
+                print("error_type: " + " ".join(node_list))
                 dbhandler.insert(error_message_pretty, node_list)
 
         except:
             #if something goes wrong continue to next mutation
+            print("EXCEPTION: ", sys.exc_info())
             continue
 
