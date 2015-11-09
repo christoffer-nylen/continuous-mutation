@@ -1,22 +1,37 @@
 #! /usr/bin/env python3
 
-from database import dbhandler
+import sys
+import database.dbhandler
+import command_manager.cmd_manager
 
-def compilate_with_error_support(command):
-    print(command)
+def run_with_error_support(command):
+    """
+    Runs a command and attempts to find appropriate error in database
 
-    #fel uppkom, kolla i db efter matchande fel och returnera nod och snyggt felmdellande
-    if(error_message != ""):
-        #snygga till felmeddelande
-        error_message_pretty = Filter.parse(error_message)
-        print("FELMEDDELANDE")
-        print(error_message_pretty)
+    Args
+        command is a list of arguments, where command[0] is the program to
+        execute
 
-        #fetch all matching error_message from db
-        possible_nodes = dbhandler.find(error_message)
+    Returns
+        List of strings of matching errors
+    """
+    _, error = command_manager.cmd_manager.CommandManager.run(None, command[0], *command[1:])
+    error = error.rstrip()
+    if error == "":
+        return []
 
-        print("Following node(s) may be needed:")
-        for node in possible_nodes:
-            print(node)
+    try:
+        return [node for node in database.dbhandler.find(error)]
+    except:
+        print("{}: ".format(sys.argv[0]), *sys.exc_info()[:-1])
+        print("{}: Has the database been initialized?".format(sys.argv[0]))
 
-
+if __name__ == "__main__":
+    command = sys.argv[1:]
+    possible_errors = run_with_error_support(command)
+    if possible_errors == []:
+        print("{}: No matching errors found in database".format(sys.argv[0]))
+    else:
+        print("{}: Matching errors:".format(sys.argv[0]))
+        for error in possible_errors:
+            print(error)
