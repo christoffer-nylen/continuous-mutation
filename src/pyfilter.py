@@ -2,11 +2,19 @@
 
 import sys
 import re
-import fileinput
-
+import os
 
 class Filter:
-    def __init__(self, regex_file_path):
+    def __init__(self, regex_file_path=""):
+
+        # Default regex_file:
+        if regex_file_path == "":
+            filedir = os.path.dirname(__file__)
+            if filedir == "":
+                filedir = "."
+            regex_file_path = "{}/filter_list.txt".format(filedir)
+
+        # Compile all lines as regexes
         self.regex_list = []
         with open(regex_file_path, "r") as f:
             for line in f:
@@ -38,4 +46,4 @@ class Filter:
 
 
 if __name__ == "__main__":
-    print(Filter(sys.argv[1]).parse(sys.stdin))
+    print(Filter().parse(sys.stdin))
