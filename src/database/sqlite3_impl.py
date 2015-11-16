@@ -79,7 +79,7 @@ def find(_error_msg):
     ON error_msg.id = errors.msg_id
     LEFT JOIN error_type
     ON error_type.id = errors.type_id
-    WHERE error_msg.msg = (?)''', (_error_msg,))
+    WHERE error_msg.msg LIKE (?)''', ('%'+_error_msg+'%',))
 
     return cursor.fetchall()
 

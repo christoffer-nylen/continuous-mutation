@@ -75,10 +75,10 @@ def print_all_tables():
 
 
 def print_msg_table():
-    print(DB.print_error_msg_table())
+    return(DB.print_error_msg_table())
 
 def print_type_table():
-    print(DB.print_error_type_table())
+    return(DB.print_error_type_table())
 
 def print_error_table():
-    print(DB.print_error_table())
+    return(DB.print_error_table())
