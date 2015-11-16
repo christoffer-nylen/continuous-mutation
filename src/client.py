@@ -24,6 +24,7 @@ def run_with_error_support(command):
     except:
         print("{}: ".format(sys.argv[0]), *sys.exc_info()[:-1])
         print("{}: Has the database been initialized?".format(sys.argv[0]))
+        return []
 
 if __name__ == "__main__":
     command = sys.argv[1:]
