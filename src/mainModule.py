@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 import sys
+
+import pyfilter
+
 from database import dbhandler
 from command_manager.cmd_manager import CommandManager
-from python_filter.pyfilter import Filter 
 from dummy_classes import test_execute
 from xml_mutation.xml_mutation import Mutator
 """
@@ -42,7 +44,7 @@ def run_mutation_on_file(filename):
     parent nodes saved into tables in the (sqlite3)database. 
     """
     mutator = Mutator(filename)
-    prettyFilter = Filter()
+    prettyFilter = pyfilter.Filter()
     for node_list in mutator.begin_mutation():
         try:
             print("NODELIST: " , node_list)
