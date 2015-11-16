@@ -39,4 +39,3 @@ class Filter:
 
 if __name__ == "__main__":
     print(Filter(sys.argv[1]).parse(sys.stdin))
-    #Filter(sys.argv[1])
