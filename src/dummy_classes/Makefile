@@ -7,4 +7,3 @@ all: $(OBJFILES)
 
 clean:
 	$(RM) $(OBJFILES)
-

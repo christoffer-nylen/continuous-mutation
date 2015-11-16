@@ -1,16 +1,21 @@
 <testconstellations>
   <testconstellation name="user_interface_test">
     <regression_type name="integration"/>
-    <tested_object>      
-      <test ref="Feline.cc"/>
-      <test ref="Animal.cc"/>
+    <tested_object>
+      <test ref="Animal.h"/>
+      <test ref="Feline.h"/>
     </tested_object>
     <harness>
-      <test ref="Canine.cc"/>
-      <test ref="Dog.cc"/>
-      <test ref="Cat.cc">
+      <test name="Canine.h"/>
+      <test name="Canine.cc"/>
+      <test name="Cat.h"/>
+      <test name="Cat.cc"/>
+      <test name="Dog.h"/>
+      <test name="Dog.cc"/>
+      <test name="Feline.cc"/>
+      <stub name="Lion.h">
 	<test ref="Lion.cc"/>	
-      </test>
+      </stub>
     </harness>
   </testconstellation>
 </testconstellations>
