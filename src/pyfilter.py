@@ -28,7 +28,7 @@ class Filter:
         """
         Parses given source
         """
-        return "\n".join(self.parse_line(line) for line in source)
+        return "".join(self.parse_line(line) for line in source)
 
 
     ##
@@ -41,9 +41,9 @@ class Filter:
         for regex in self.regex_list:
             match = regex.search(line)
             if match:
-                return match.group(0)
+                return "{}\n".format(match.group(0))
         return ""
 
 
 if __name__ == "__main__":
-    print(Filter().parse(sys.stdin))
+    print(Filter().parse(sys.stdin), end="")
