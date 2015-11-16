@@ -3,6 +3,7 @@
 import sys
 import database.dbhandler
 import command_manager.cmd_manager
+from python_filter.pyfilter import Filter
 
 def run_with_error_support(command):
     """
@@ -19,6 +20,9 @@ def run_with_error_support(command):
     if error.rstrip() == "":
         return []
 
+    parse_filter = Filter();
+    error = parse_filter.parse(error)
+    
     try:
         return [node for node in database.dbhandler.find(error)]
     except:
