@@ -5,16 +5,13 @@ import database.dbhandler
 import command_manager.cmd_manager
 import pyfilter
 
+##
+# @param command is a list of arguments, where command[0] is the program to execute
+# @returns List of strings of matching errors
+
 def run_with_error_support(command):
     """
     Runs a command and attempts to find appropriate error in database
-
-    Args
-        command is a list of arguments, where command[0] is the program to
-        execute
-
-    Returns
-        List of strings of matching errors
     """
     _, error = command_manager.cmd_manager.CommandManager.run(None, command[0], *command[1:])
     if error.rstrip() == "":

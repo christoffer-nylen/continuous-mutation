@@ -21,7 +21,9 @@ for nod in xml-mutation
 
 
 def startup():
-    #drop and create tables needed for saving errors
+    """
+    drop and create tables needed for saving errors.
+    """
     dbhandler.createDB();
 
     ##
