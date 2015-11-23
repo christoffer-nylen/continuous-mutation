@@ -2,26 +2,30 @@
 
 import sys
 import database.dbhandler
-import command_manager.cmd_manager
+import command_manager.cmd_manager as cmd_mgr
 import pyfilter
 
-##
-# @param command is a list of arguments, where command[0] is the program to execute
-# @returns List of strings of matching errors
-
+"""
+@param
+    command is a list of arguments, where command[0] is the program to execute.
+@returns
+    List of strings of matching errors
+"""
 def run_with_error_support(command):
     """
     Runs a command and attempts to find appropriate error in database
+
+    Example: run_with_error_support(["make", "Makefiles"])
     """
-    _, error = command_manager.cmd_manager.CommandManager.run(None, command[0], *command[1:])
+    _, error = cmd_mgr.CommandManager.run(None, command[0], *command[1:])
     if error.rstrip() == "":
         return []
 
-    parse_filter = pyfilter.Filter();
+    parse_filter = pyfilter.Filter()
     error = parse_filter.parse(error)
-    
+
     try:
-        return [(node,error) for node in database.dbhandler.find(error)]
+        return [(node, error) for node in database.dbhandler.find(error)]
     except:
         print("{}: ".format(sys.argv[0]), *sys.exc_info()[:-1])
         print("{}: Has the database been initialized?".format(sys.argv[0]))
@@ -37,8 +41,9 @@ if __name__ == "__main__":
     if len(possible_solutions) == 1:
         print("\n{}: Possibly caused by this missing tag:".format(sys.argv[0]))
     else:
-        print("\n{}: Possibly caused by any of these missing tags:".format(sys.argv[0]))
+        print("\n{}: ".format(sys.argv[0]),
+              "Possibly caused by any of these missing tags:")
 
     for (node, error) in possible_solutions:
-        print("Hit accuracy: " , (len(error) / len(node[0])) * 100, "%" )
-        print(*node[1:])
+        print("Hit accuracy: {}%".format(len(error) / len(node[0]) * 100),
+              *node[1:])
