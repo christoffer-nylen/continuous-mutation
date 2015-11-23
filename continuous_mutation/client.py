@@ -1,9 +1,10 @@
 #! /usr/bin/env python3
 
 import sys
-import database.dbhandler
-import command_manager.cmd_manager as cmd_mgr
-import pyfilter
+
+import continuous_mutation.database.dbhandler as dbhandler
+import continuous_mutation.command_manager.cmd_manager as cmd_mgr
+import continuous_mutation.python_filter.pyfilter as pyfilter
 
 """
 @param
@@ -25,7 +26,7 @@ def run_with_error_support(command):
     error = parse_filter.parse(error)
 
     try:
-        return [(node, error) for node in database.dbhandler.find(error)]
+        return [(node, error) for node in dbhandler.find(error)]
     except:
         print("{}: ".format(sys.argv[0]), *sys.exc_info()[:-1])
         print("{}: Has the database been initialized?".format(sys.argv[0]))
