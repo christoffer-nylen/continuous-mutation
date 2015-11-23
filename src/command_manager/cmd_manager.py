@@ -6,10 +6,11 @@ import os
 Class for running terminal commands and receive stdout and stderr
 """
 
+
 class CommandManager:
     ##
     # @param command Terminal command as a string, eg. "ls"
-    # @param *args optional parameters (like flags or filenames) for the command
+    # @param *args optional parameters (flags, filenames etc.) for the command
     # @returns Two strings, one representing stdout and the other is stderr
     def run(self, command, *args):
         """

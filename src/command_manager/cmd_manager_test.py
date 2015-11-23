@@ -4,6 +4,7 @@ from cmd_manager import CommandManager
 testing cmd_manager.py in command_manager/
 """
 
+
 class TestCmdManager(unittest.TestCase):
 
     def testOutput(self):
