@@ -3,3 +3,6 @@
 *~
 __pycache__
 doc/*
+build/
+dist/
+*.egg*

@@ -1,4 +1,4 @@
-from database import sqlite3_impl as DB
+from . import sqlite3_impl as DB
 
 """
 Middlehand for sql commands.

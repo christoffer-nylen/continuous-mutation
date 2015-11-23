@@ -1,8 +1,6 @@
 import xml.parsers.expat
-from contextlib import contextmanager
 from xml.dom.minidom import parse, Node
 from xml.dom import NotFoundErr
-from datetime import datetime
 
 
 """
@@ -20,6 +18,7 @@ class Mutator:
         and the root node
         """
         self.xmlfile = xmlfile
+        self.backup_xml_file
         self.init_XML_tree()
         self.xmlfile_node_list = []
 
@@ -38,7 +37,7 @@ class Mutator:
         """
         try:
             self.xmltree = parse(self.xmlfile)
-            self.xmlroot = self.xmltree.documentElement
+            self.xmlroot = self.xmltree.documentElement 
         except xml.parsers.expat.ExpatError as e:
             return e.arg(0)
 
@@ -110,7 +109,7 @@ class Mutator:
         """
         try:
             with open(filename, 'w', encoding='utf-8') as file_handle:
-                self.xmlroot.writexml(file_handle)
+                self.xmlroot.parentNode.writexml(file_handle, encoding="UTF-8")
         except EnvironmentError as error:
             print(error)
 
@@ -120,7 +119,7 @@ class Mutator:
         the function yields a touple containing the node affected, a timestamp for the
         modified xml file and the path from the node to the root of the document.
         """
-
+        self.backup_xml_file()
         for node in self.find_nodes():
             mutated_node = self.generate_node_path(node)
             filename = mutated_node[0]
@@ -131,6 +130,7 @@ class Mutator:
             # mess with the integrity of the DOM structure for nodes that are to
             # be removed after this one.
 
+            
             sibling = node.nextSibling
             parent = node.parentNode
             parent.removeChild(node)
@@ -138,4 +138,19 @@ class Mutator:
             yield mutated_node
             parent.insertBefore(node, sibling)
 
-        self.write(self.xmlfile)
+        self.restore_xml_file()
+        
+    def backup_xml_file(self):
+        """
+        Backs up the xml file as it was before doing any mutations, this is done
+        so that we can restore it back after the final mutation
+        """
+        with open(self.xmlfile, "r", encoding="UTF-8") as file_handle:
+            self.backup_xmlfile = file_handle.read()
+
+    def restore_xml_file(self):
+        """
+        Restores the xml file as it was before doing any mutations
+        """
+        with open(self.xmlfile, "w", encoding="UTF-8") as file_handle:
+            file_handle.write(self.backup_xmlfile)
