@@ -1,15 +1,15 @@
-import mainModule
 import unittest
-from database import dbhandler
+import continuous_mutation.xml_mutation.run_mutator as run_mutator
+from continuous_mutation.database import dbhandler
 
 class TestCreater(unittest.TestCase):
 
     def run(self):
 
         #drop and create db
-        mainModule.startup()
+        run_mutator.startup()
 
-        mainModule.run_mutation_on_file("dummy_classes/testxml.xml")
+        run_mutator.run_mutation_on_file("dummy_classes/testxml.xml")
         print("test")
         print(dbhandler.print_all_tables())
 

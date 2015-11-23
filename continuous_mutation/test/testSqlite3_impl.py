@@ -1,5 +1,5 @@
 import unittest
-import sqlite3_impl as db
+import continuous_mutation.database.sqlite3_impl as db
 
 """
 testing sqlite3_impl.py in database/

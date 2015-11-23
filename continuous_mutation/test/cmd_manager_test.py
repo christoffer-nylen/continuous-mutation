@@ -1,5 +1,5 @@
 import unittest
-from cmd_manager import CommandManager
+from continuous_mutation.command_manager.cmd_manager import CommandManager
 """
 testing cmd_manager.py in command_manager/
 """

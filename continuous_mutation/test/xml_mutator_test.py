@@ -1,11 +1,11 @@
 import unittest
-from xml_mutation import Mutator
+from continuous_mutation.xml_mutation.xml_mutator import Mutator
 import xml.dom
 
 class XmlMutationTests(unittest.TestCase):
 
     def setUp(self):
-        self.mutator = Mutator("../testxml/testconstellations.xml")
+        self.mutator = Mutator("../xml_mutation/testxml/testconstellations.xml")
 
     def tearDown(self):
         self.mutator = None

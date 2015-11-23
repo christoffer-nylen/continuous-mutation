@@ -1,1 +1,0 @@
-from pyfilter import Filter

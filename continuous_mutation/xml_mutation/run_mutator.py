@@ -1,11 +1,10 @@
 #! /usr/bin/env python3
 import sys
 import os.path
-import pyfilter
+import continuous_mutation.python_filter.pyfilter
 from database.dbhandler import DatabaseHandler
-from command_manager.cmd_manager import CommandManager
-from dummy_classes import test_execute
-from xml_mutation.xml_mutation import Mutator
+from continuous_mutation.command_manager.cmd_manager import CommandManager
+from continuous_mutation.xml_mutation.xml_mutator import Mutator
 
     ##
     # @param filename the xml file to mutate on

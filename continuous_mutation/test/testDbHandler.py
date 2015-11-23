@@ -1,4 +1,4 @@
-import dbhandler
+import continuous_mutation.database.dbhandler as dbhandler
 import unittest
 """
 testing dbhandler.py in database/

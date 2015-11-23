@@ -54,11 +54,11 @@ class DatabaseHandler:
         msg_id = self.db.get_msg_id(error_msg)
         if msg_id is None:
             msg_id = self.db.insert_error_msg(error_msg)
-            
+
         type_id = self.db.get_type_id(error_type)
         if type_id is None:
             type_id = self.db.insert_error_type(error_type)
-                
+
         if type_id is not None and msg_id is not None:
             self.db.insert_error(msg_id, type_id)
 
@@ -66,8 +66,8 @@ class DatabaseHandler:
     def find(self,error_msg):
         """
         find error type by error message
-        """    
-        return self.db.find(error_msg)    
+        """
+        return self.db.find(error_msg)
 
     def print_all_tables(self):
         print(self.db.print_error_msg_table())
