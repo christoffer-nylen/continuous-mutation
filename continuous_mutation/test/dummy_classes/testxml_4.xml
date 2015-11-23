@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<testconstellations>
+  <testconstellation name="user_interface_test">
+    <regression_type name="integration"/>
+    <tested_object>      
+      <test ref="Feline.cc"/>
+    </tested_object>
+    <harness>
+      <test ref="Canine.cc"/>
+      <test ref="Dog.cc"/>
+      <test ref="Cat.cc">
+	
+      </test>
+    </harness>
+  </testconstellation>
+</testconstellations>
