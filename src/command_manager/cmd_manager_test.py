@@ -1,5 +1,8 @@
 import unittest
 from cmd_manager import CommandManager
+"""
+testing cmd_manager.py in command_manager/
+"""
 
 
 class TestCmdManager(unittest.TestCase):
@@ -40,4 +43,5 @@ class TestCmdManager(unittest.TestCase):
         self.assertEqual(output, "stdout")
         self.assertEqual(errors, "stderr")
 
-        # We should add more testcases that are more relevant in the future...
+if __name__ == "__main__":
+    unittest.main()
