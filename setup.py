@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 from setuptools import setup
 
 setup(name='continuous_mutation',
@@ -10,4 +12,4 @@ setup(name='continuous_mutation',
       include_package_data=True,
       zip_safe=False)
 
-      
+
