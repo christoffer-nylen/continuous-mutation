@@ -55,7 +55,7 @@ def run_mutation_on_file(filename, database_name):
 
             #If error occures saved the errmsg in db
             if error_message != "":                
-                #error_message_pretty = prettyFilter.parse(error_message) 
+                error_message_pretty = prettyFilter.parse(error_message) 
                 #reverse order of nodes. Parent... node
                 node_list = node_list[::-1]
                 print("run_mutation: DB INSERT")
