@@ -1,5 +1,7 @@
 import sqlite3
-#todo: add data-type validations in all inserts and get
+#re = regexp
+import re 
+import os.path
 
 """
 SQLite3 implementation module.
@@ -13,123 +15,146 @@ error_type: id, typ av fel
 errors: fel_id, typ_id
 """
 
-db = sqlite3.connect("testDB.sql")
+
+class Database:
+
+    def createDB(self):
+        print("CREATE DB")
+        cursor = self.cursor
+
+        cursor.execute("DROP TABLE IF EXISTS error_msg")
+        cursor.execute("DROP TABLE IF EXISTS error_type")
+        cursor.execute("DROP TABLE IF EXISTS errors")
+        
+        cursor.execute('''CREATE TABLE error_msg(
+        id INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0, msg TEXT UNIQUE )''')
+        
+        cursor.execute('''CREATE TABLE error_type(
+        id INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0, type TEXT UNIQUE )''')
+        
+        cursor.execute('''CREATE TABLE errors(
+        msg_id INT, type_id INT,
+        FOREIGN KEY (msg_id) REFERENCES error_msg(id),
+        FOREIGN KEY (type_id) REFERENCES error_type(id),
+        PRIMARY KEY (msg_id, type_id))''')
+
+        print("DATABASE CREATED")
+        
+        self.connection.commit()
+        
+        
+    def insert_error_msg(self, error_msg):
+        cursor = self.cursor
+        
+        cursor.execute("INSERT OR IGNORE INTO error_msg  (msg) VALUES (?)",
+                       (error_msg, ))
+        self.connection.commit()
+        return cursor.lastrowid
 
 
-def createDB():
-    cursor = db.cursor()
+    def insert_error_type(self, error_types):    
+        cursor = self.cursor
+            
+        #saves node with all parents as an entry
+        error_types = "".join(error_types)
+        cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_types, ))
 
-    cursor.execute("DROP TABLE IF EXISTS error_msg")
-    cursor.execute("DROP TABLE IF EXISTS error_type")
-    cursor.execute("DROP TABLE IF EXISTS errors")
-
-    cursor.execute('''CREATE TABLE error_msg(
-    id INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0, msg TEXT UNIQUE )''')
-
-    cursor.execute('''CREATE TABLE error_type(
-    id INTEGER PRIMARY KEY AUTOINCREMENT DEFAULT 0, type TEXT UNIQUE )''')
-
-    cursor.execute('''CREATE TABLE errors(
-    msg_id INT, type_id INT,
-    FOREIGN KEY (msg_id) REFERENCES error_msg(id),
-    FOREIGN KEY (type_id) REFERENCES error_type(id),
-    PRIMARY KEY (msg_id, type_id))''')
-
-    db.commit()
+        self.connection.commit()
+        return cursor.lastrowid
 
 
-def insert_error_msg(error_msg):
-    cursor = db.cursor()
-
-    cursor.execute("INSERT OR IGNORE INTO error_msg  (msg) VALUES (?)",
-                   (error_msg, ))
-    db.commit()
-    return cursor.lastrowid
-
-
-def insert_error_type(error_types):    
-    cursor = db.cursor()
-
-    #saves node with all parents as an entry
-    error_types = "".join(error_types)
-    cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_types, ))
-
-    db.commit()
-    return cursor.lastrowid
-
-
-def insert_error(msg_id, type_id):
-    cursor = db.cursor()
-
-    cursor.execute("INSERT OR IGNORE INTO errors VALUES(?,?)",
+    def insert_error(self, msg_id, type_id):
+        cursor = self.cursor
+            
+        cursor.execute("INSERT OR IGNORE INTO errors VALUES(?,?)",
                    (msg_id, type_id,))
 
-    db.commit()
+        self.connection.commit()
 
 
-def find(_error_msg):
-    """
-    find error type by error msg. Returns list with all related error types
-    [(<error_msg>,<error_type>)]
-    """
-    cursor = db.cursor()
-
-    cursor.execute('''SELECT error_msg.msg, error_type.type FROM errors
-    LEFT JOIN error_msg
-    ON error_msg.id = errors.msg_id
-    LEFT JOIN error_type
-    ON error_type.id = errors.type_id
-    WHERE error_msg.msg LIKE (?)''', ('%'+_error_msg+'%',))
-
-    return cursor.fetchall()
-
-
-def get_type_id(_error_type):
-    cursor = db.cursor()
-
-    _error_type = "".join(_error_type)
-    print("sqlite3_impl.py::get_type_id: " + _error_type)
-    cursor.execute('''SELECT id FROM error_type
-    WHERE type = (?)''', (_error_type,))
-
-    result = cursor.fetchone()
-
-    if result is not None:
-        return result[0]
-    return result
+    def find(self, _error_msg):
+        """
+        find error type by error msg. Returns list with all related error types
+        [(<error_msg>,<error_type>)]
+        """
+        cursor = self.cursor
+        
+        cursor.execute('''SELECT error_msg.msg, error_type.type FROM errors
+        LEFT JOIN error_msg
+        ON error_msg.id = errors.msg_id
+        LEFT JOIN error_type
+        ON error_type.id = errors.type_id
+        WHERE error_msg.msg LIKE (?)''', ('%'+_error_msg+'%',))
+        
+        return cursor.fetchall()
 
 
-def get_msg_id(_error_msg):
-    cursor = db.cursor()
+    def get_type_id(self, _error_type):
+        cursor = self.cursor
 
-    cursor.execute('''SELECT id FROM error_msg
-    WHERE msg = (?)''', (_error_msg,))
-
-    result = cursor.fetchone()
-
-    if result is not None:
-        return result[0]
-    return result
-
-def print_error_msg_table():
-    cursor = db.cursor()
-
-    cursor.execute("SELECT * FROM error_msg")
+        _error_type = "".join(_error_type)
+        print("sqlite3_impl.py::get_type_id: " + _error_type)
+        cursor.execute('''SELECT id FROM error_type
+        WHERE type = (?)''', (_error_type,))
+        
+        result = cursor.fetchone()
     
-    return cursor.fetchall()
-
-
-def print_error_type_table():
-    cursor = db.cursor()
-
-    cursor.execute("SELECT * FROM error_type")
+        if result is not None:
+            return result[0]
+        return result
     
-    return cursor.fetchall()
+
+    def get_msg_id(self, _error_msg):
+        cursor = self.cursor
+
+        cursor.execute('''SELECT id FROM error_msg
+        WHERE msg = (?)''', (_error_msg,))
+
+        result = cursor.fetchone()
+
+        if result is not None:
+            return result[0]
+        return result
 
 
-def print_error_table():
-    cursor = db.cursor()
+    def print_error_msg_table(self):
+        cursor = self.cursor
 
-    cursor.execute("SELECT * FROM errors")
+        cursor.execute("SELECT * FROM error_msg")
+        
+        return cursor.fetchall()
+
+
+    def print_error_type_table(self):
+        cursor = self.cursor
+
+        cursor.execute("SELECT * FROM error_type")
     
-    return cursor.fetchall()
+        return cursor.fetchall()
+
+
+    def print_error_table(self):
+        cursor = self.cursor
+
+        cursor.execute("SELECT * FROM errors")
+    
+        return cursor.fetchall()
+
+
+    def __init__(self, database_name):
+        print("DATABASE INIT")
+        if(re.match("\A[a-zA-Z]+.sql", database_name)):
+            
+            if os.path.isfile(database_name) != True:
+                self.connection = sqlite3.connect(database_name)
+                self.cursor = self.connection.cursor()
+                self.createDB() 
+            else:
+                self.connection = sqlite3.connect(database_name)
+                self.cursor = self.connection.cursor()    
+            
+           
+        else:
+            print("Error in sqlite3_impl: Database name need to match [a-zA-Z]+.sql")
+            return None
+

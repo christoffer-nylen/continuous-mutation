@@ -1,48 +1,31 @@
 #! /usr/bin/env python3
 import sys
+import os.path
 import pyfilter
-from database import dbhandler
+from database.dbhandler import DatabaseHandler
 from command_manager.cmd_manager import CommandManager
 from dummy_classes import test_execute
 from xml_mutation.xml_mutation import Mutator
-"""
-struktur
---------
-
-ladda nodmängd
-
-for nod in xml-mutation
-  kör xml
-  manpiluera felmeddelande
-  insert to db
-
-#endfor
-"""
-
-
-def startup():
-    """
-    drop and create tables needed for saving errors.
-    """
-    dbhandler.createDB();
 
     ##
-    # @param filename the xml file to mutate on 
+    # @param filename the xml file to mutate on
+    # @param database_name the name of the sql file
     # @returns void
-def run_mutation_on_file(filename):
+def run_mutation_on_file(filename, database_name):
     """
     filename is the xml file for generation make files.
     This function mutate on the file so that one node
-    is missing per iteration. After mutating so every 
-    node have once been remove the original file will 
+    is missing per iteration. After mutating so every
+    node have once been remove the original file will
     be restored.
 
     In every iteration the usuall procedure for creating
     makefiles is executed. If any errors occures during
     the "make" command the function[run_mutation_on_file]
     will save the error message and the node with all its
-    parent nodes saved into tables in the (sqlite3)database. 
+    parent nodes saved into tables in the (sqlite3)database.
     """
+    dbhandler = DatabaseHandler(database_name)
     mutator = Mutator(filename)
     prettyFilter = pyfilter.Filter()
     for node_list in mutator.begin_mutation():
@@ -55,7 +38,7 @@ def run_mutation_on_file(filename):
 
             """
             Insert procedure for generating and building makefiles
-            here. Use cmdManager.run([command]...,) 
+            here. Use cmdManager.run([command]...,)
             example: cmdManager.run("mbede-generator", "-l")
             example: cmdManager.run("mv", filename, "new_filename.txt")
 
@@ -72,8 +55,7 @@ def run_mutation_on_file(filename):
 
             #If error occures saved the errmsg in db
             if error_message != "":
-                print("ERROR")
-                error_message_pretty = prettyFilter.parse(error_message) 
+                #error_message_pretty = prettyFilter.parse(error_message)
                 #reverse order of nodes. Parent... node
                 node_list = node_list[::-1]
                 print("run_mutation: DB INSERT")
@@ -89,11 +71,14 @@ def run_mutation_on_file(filename):
 
 
 if __name__ == "__main__":
-    startup()
     filename = sys.argv[1]
-    
-    if filename == "":
+    database_name = sys.argv[2]
+
+    if filename == "" or os.path.isfile(filename):
         print("ERROR: first arguemnt need to be (path)filename.xml")
         sys.exit(1)
+    elif database_name == "":
+        print("ERROR: second argument nned to be existing or new database name")
+        sys.exit(1)
     else:
-        run_mutation_on_file(filename)
+        run_mutation_on_file(filename, database_name)
