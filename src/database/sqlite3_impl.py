@@ -142,19 +142,19 @@ class Database:
 
 
     def __init__(self, database_name):
-        print("DATABASE INIT")
         if(re.match("\A[a-zA-Z]+.sql", database_name)):
-            
+                                    
             if os.path.isfile(database_name) != True:
+                print("DB create new database")
                 self.connection = sqlite3.connect(database_name)
-                self.cursor = self.connection.cursor()
-                self.createDB() 
-            else:
+                self.cursor = self.connection.cursor()                
+                self.createDB()
+            else: 
                 self.connection = sqlite3.connect(database_name)
-                self.cursor = self.connection.cursor()    
-            
-           
+                self.cursor = self.connection.cursor()                
+
+                         
         else:
-            print("Error in sqlite3_impl: Database name need to match [a-zA-Z]+.sql")
-            return None
+            raise NameError("Error in sqlite3_impl: Database name need to match [a-zA-Z]+.sql")
+
 

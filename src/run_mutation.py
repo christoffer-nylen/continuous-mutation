@@ -25,9 +25,20 @@ def run_mutation_on_file(filename, database_name):
     will save the error message and the node with all its
     parent nodes saved into tables in the (sqlite3)database. 
     """
-    dbhandler = DatabaseHandler(database_name)
-    mutator = Mutator(filename)
+    try:
+        dbhandler = DatabaseHandler(database_name)
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+
+    try:
+        mutator = Mutator(filename)
+    except:
+        print("ERROR: not vaild filename/path for xml compilation file")
+        sys.exit(1)
+
     prettyFilter = pyfilter.Filter()
+
     for node_list in mutator.begin_mutation():
         try:
             print("NODELIST: " , node_list)
@@ -74,7 +85,7 @@ if __name__ == "__main__":
     filename = sys.argv[1]
     database_name = sys.argv[2]
     
-    if filename == "" or os.path.isfile(filename):
+    if filename == "" or not os.path.isfile(filename):
         print("ERROR: first arguemnt need to be (path)filename.xml")
         sys.exit(1)
     elif database_name == "":

@@ -1,11 +1,11 @@
 #! /usr/bin/env python3
 
 import sys
-import database.dbhandler
+from database.dbhandler import DatabaseHandler
 import command_manager.cmd_manager
 import pyfilter
 
-def run_with_error_support(command):
+def run_with_error_support(database_name, command):
     """
     Runs a command and attempts to find appropriate error in database
 
@@ -16,6 +16,14 @@ def run_with_error_support(command):
     Returns
         List of strings of matching errors
     """
+
+    try:
+        dbhandler = DatabaseHandler(database_name)
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+
+
     _, error = command_manager.cmd_manager.CommandManager.run(None, command[0], *command[1:])
     if error.rstrip() == "":
         return []
@@ -24,15 +32,16 @@ def run_with_error_support(command):
     error = parse_filter.parse(error)
     
     try:
-        return [(node,error) for node in database.dbhandler.find(error)]
+        return [(node,error) for node in dbhandler.find(error)]
     except:
         print("{}: ".format(sys.argv[0]), *sys.exc_info()[:-1])
         print("{}: Has the database been initialized?".format(sys.argv[0]))
         return []
 
 if __name__ == "__main__":
-    command = sys.argv[1:]
-    possible_solutions = run_with_error_support(command)
+    command = sys.argv[2:]
+    database_name = sys.argv[1]
+    possible_solutions = run_with_error_support(database_name, command)
     if possible_solutions == []:
         print("\n{}: No matching errors found in database".format(sys.argv[0]))
         sys.exit(0)
