@@ -1,4 +1,4 @@
-from database.sqlite3_impl import Database
+from continuous_mutation.database.sqlite3_impl import Database
 
 """
 Middlehand for sql commands.

@@ -3,7 +3,7 @@
 import sys
 import os.path
 
-import continuous_mutation.python_filter.pyfilter
+import continuous_mutation.python_filter.pyfilter as pyfilter
 from continuous_mutation.database.dbhandler import DatabaseHandler
 from continuous_mutation.command_manager.cmd_manager import CommandManager
 from continuous_mutation.xml_mutation.xml_mutator import Mutator
@@ -80,11 +80,7 @@ def run_mutation_on_file(filename, database_name):
             print("EXCEPTION: ", sys.exc_info())
             continue
 
-
-
-if __name__ == "__main__":
-    filename = sys.argv[1]
-    database_name = sys.argv[2]    
+def main(filename, database_name):
     if filename == "" or not os.path.isfile(filename):
         print("ERROR: first arguemnt need to be (path)filename.xml")
         sys.exit(1)
@@ -93,3 +89,7 @@ if __name__ == "__main__":
         sys.exit(1)
     else:
         run_mutation_on_file(filename, database_name)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1], sys.argv[2])
