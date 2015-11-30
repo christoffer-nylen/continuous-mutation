@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
 
 import sys
-
-import continuous_mutation.database.dbhandler as dbhandler
+import continuous_mutation.database.dbhandler as DatabaseHandler
 import continuous_mutation.command_manager.cmd_manager as cmd_mgr
 import continuous_mutation.python_filter.pyfilter as pyfilter
 
@@ -12,13 +11,22 @@ import continuous_mutation.python_filter.pyfilter as pyfilter
 @returns
     List of strings of matching errors
 """
-def run_with_error_support(command):
+def run_with_error_support(database_name, command):
     """
     Runs a command and attempts to find appropriate error in database
 
     Example: run_with_error_support(["make", "Makefiles"])
     """
+
+    try:
+        dbhandler = DatabaseHandler(database_name)
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+
     _, error = cmd_mgr.CommandManager.run(None, command[0], *command[1:])
+
+
     if error.rstrip() == "":
         return []
 
@@ -33,8 +41,9 @@ def run_with_error_support(command):
         return []
 
 if __name__ == "__main__":
-    command = sys.argv[1:]
-    possible_solutions = run_with_error_support(command)
+    command = sys.argv[2:]
+    database_name = sys.argv[1]
+    possible_solutions = run_with_error_support(database_name, command)
     if possible_solutions == []:
         print("\n{}: No matching errors found in database".format(sys.argv[0]))
         sys.exit(0)

@@ -8,9 +8,8 @@ See functions for more info
 
 class DatabaseHandler:
 
-    def __init__(self,database_name):
-        self.db = Database(database_name)
-        print("<OK> dbhandler:createDB")
+    def __init__(self,database_name):      
+        self.db = Database(database_name)              
 
 
     def insert_error_msg(self, error_msg):
