@@ -1,7 +1,1 @@
-recursive-include continuous_mutation/xml_mutation/testxml *
-recursive-include continuous_mutation/xml_mutation/schemas *
-recursive-include continuous_mutation/python_filter/filter_list.txt
-recursive-include continuous_mutation/test/dummy_classes *
-recursive-include continuous_mutation/Doxyfile
-
-
+recursive-include continuous_mutation *
