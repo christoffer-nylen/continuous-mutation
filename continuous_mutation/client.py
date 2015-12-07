@@ -28,21 +28,18 @@ def run_with_error_support(program_name, database_name, command):
         return []
 
     parse_filter = pyfilter.Filter()
-    #error = parse_filter.parse(error)
-
+    error = parse_filter.parse(error)
 
     try:
         possible_errors = {}
         for line in error.split("\n"):
-            #[(msg_id, error_msg)]
             if line == "":
                 break
-            for error_tuple in dbhandler.find(line):
+            for error_tuple in dbhandler.find(line):        
                 if error_tuple[1] not in possible_errors:
                     possible_errors[error_tuple[1]] = 1
                 else:
                     possible_errors[error_tuple[1]] += 1
-
                     
         #reverse tuple pairs to sort by hits
         if len(possible_errors) > 0:
@@ -53,7 +50,6 @@ def run_with_error_support(program_name, database_name, command):
         else:
             return [],error
         
-        #return [(node, error) for node in dbhandler.find(error)]
     except:
         print("{}: ".format(program_name), *sys.exc_info()[:-1])
         print("{}: Has the database been initialized?".format(program_name))
@@ -74,25 +70,14 @@ def main(program_name, database_name, commands):
     print("#", " " * 31, "ERROR SUPPORT", " " * 30, "#")
     for possible_type in possible_solutions:
         print("\nPossibly caused by this missing tag: {}".format(possible_type[1]))        
-        print("accuracy: ", (possible_type[0] / len(in_error)) * 100)
-    
-    print("#" * 80)
-
-"""
-    if len(possible_solutions) == 1:
-        print("\n{}: Possibly caused by this missing tag:".format(program_name))
-    else:
-        print("\n{}: ".format(program_name),
-              "Possibly caused by any of these missing tags:")
-
-    for (node, error) in possible_solutions:
         try:
-            accuracy = (len(error) / len(node[0])) * 100
+            print("accuracy: {0:.2f}%".format((possible_type[0] / len(in_error)) * 100))
         except ZeroDivisionError:
             accuracy = 0
-        print("Hit accuracy: {}%".format(accuracy), *node[1:])
+            print("Hit accuracy: {}%".format(accuracy))
 
-"""
+    
+    print("#" * 80)
 
 if __name__ == "__main__":
     main(sys.argv[0], sys.argv[1], sys.argv[2:])
