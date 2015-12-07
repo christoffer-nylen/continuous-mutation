@@ -23,12 +23,13 @@ class Filter:
 
     ##
     # @param source A string, with a newline character separating each line
-    # @returns A string containing the parse output
+    # @returns A string containing the parse output, which may be many
+    #          newline-separated lines. There will be no duplicate lines
     def parse(self, source):
         """
         Parses given source
         """
-        return "".join(self.parse_line(line) for line in source.split("\n"))
+        return "".join(set(self.parse_line(line) for line in source.split("\n")))
 
 
     ##
