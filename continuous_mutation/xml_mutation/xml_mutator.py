@@ -37,9 +37,10 @@ class Mutator:
         """
         try:
             self.xmltree = parse(self.xmlfile)
-            self.xmlroot = self.xmltree.documentElement 
+            self.xmlroot = self.xmltree.documentElement
         except xml.parsers.expat.ExpatError as e:
-            return e.arg(0)
+            print("{0}: Failed to parse file: {1}".format(self.xmlfile, e),
+                    file=sys.stderr)
 
     ##
     # @returns A list with all nodes found in the xml tree.
