@@ -46,21 +46,27 @@ class Database:
     def insert_error_msg(self, error_msg):
         cursor = self.cursor
         
-        cursor.execute("INSERT OR IGNORE INTO error_msg  (msg) VALUES (?)",
-                       (error_msg, ))
-        self.connection.commit()
-        return cursor.lastrowid
+        if(error_msg != "" and error_msg != None):
+            cursor.execute("INSERT OR IGNORE INTO error_msg  (msg) VALUES (?)",
+                           (error_msg, ))
+            self.connection.commit()
+            return cursor.lastrowid
+        else:
+            return None
 
 
     def insert_error_type(self, error_types):    
         cursor = self.cursor
             
         #saves node with all parents as an entry
-        error_types = "".join(error_types)
-        cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_types, ))
+        if(len(error_types) == 1): 
+            error_types = "".join(error_types)
+            cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_types, ))
 
-        self.connection.commit()
-        return cursor.lastrowid
+            self.connection.commit()
+            return cursor.lastrowid
+        else:
+            return None
 
 
     def insert_error(self, msg_id, type_id):

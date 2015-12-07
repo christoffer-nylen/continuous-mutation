@@ -11,6 +11,9 @@ class DatabaseHandler:
     def __init__(self,database_name):      
         self.db = Database(database_name)              
 
+    #function is for debug
+    def query(self, command):
+        return self.db.query(command)
 
     def insert_error_msg(self, error_msg):
         if error_msg == "":
@@ -27,6 +30,7 @@ class DatabaseHandler:
                   "in-parameters")
             return "<FAILED>"
 
+
         print("<OK> dbhandler:insert_error_type")
         return self.db.insert_error_type(error_type)
 
@@ -42,7 +46,6 @@ class DatabaseHandler:
 
     def get_error_type_id(self, type):
         return self.db.get_type_id(type)
-
 
     def insert(self, error_msg, error_type):
         """
