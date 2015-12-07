@@ -12,7 +12,7 @@ def unknown_argument():
 def client_arguments(args):
     def usage():
         print("Usage: client database_path commands",
-              "Example: client sqlite.db make Makefiles",
+              "Example: client database.sql make Makefiles",
               sep="\n\n")
 
     try:
@@ -30,7 +30,7 @@ def client_arguments(args):
 def run_mutator_arguments(args):
     def usage():
         print("Usage: run_mutator xml_file database_path",
-              "Example: run_mutator test_constellations.xml sqlite.db",
+              "Example: run_mutator test_constellations.xml database.sql",
               sep="\n\n")
 
     try:

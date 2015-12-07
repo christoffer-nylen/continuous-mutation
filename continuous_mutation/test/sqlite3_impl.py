@@ -1,11 +1,12 @@
 import unittest
-import continuous_mutation.database.sqlite3_impl as db
+from continuous_mutation.database.sqlite3_impl import Database
 
 """
 testing sqlite3_impl.py in database/
 
 """
 
+db = Database("testdb.sql")
 
 class TestCreater(unittest.TestCase):
 
@@ -50,5 +51,4 @@ class TestCreater(unittest.TestCase):
         return
 
 
-if __name__ == "__main__":
-    unittest.main()
+unittest.main()

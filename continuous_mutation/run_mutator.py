@@ -75,10 +75,15 @@ def run_mutation_on_file(filename, database_name):
                 print("error_type: " + " ".join(node_list))
                 dbhandler.insert(error_message_pretty, node_list)
 
+        except KeyboardInterrupt:
+            mutator.restore_xml_file()
+            print("KeyboardInterrupt caught, skipping to next xml mutation")
+            continue
         except:
             #if something goes wrong continue to next mutation
             print("EXCEPTION: ", sys.exc_info())
             continue
+            
 
 def main(filename, database_name):
     if filename == "" or not os.path.isfile(filename):

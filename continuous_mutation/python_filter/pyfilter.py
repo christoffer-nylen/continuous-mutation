@@ -22,13 +22,14 @@ class Filter:
 
 
     ##
-    # @param source Given source, e.g. sys.stdin
-    # @returns A string containing the parse output
+    # @param source A string, with a newline character separating each line
+    # @returns A string containing the parse output, which may be many
+    #          newline-separated lines. There will be no duplicate lines
     def parse(self, source):
         """
         Parses given source
         """
-        return "".join(self.parse_line(line) for line in source)
+        return "".join(set(self.parse_line(line) for line in source.split("\n")))
 
 
     ##
@@ -46,4 +47,5 @@ class Filter:
 
 
 if __name__ == "__main__":
-    print(Filter().parse(sys.stdin), end="")
+    for string in sys.stdin:
+        print(Filter().parse(string), end="")
