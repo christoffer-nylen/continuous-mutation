@@ -59,14 +59,11 @@ class Database:
         cursor = self.cursor
             
         #saves node with all parents as an entry
-        if(len(error_types) == 1): 
-            error_types = "".join(error_types)
-            cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_types, ))
-
-            self.connection.commit()
-            return cursor.lastrowid
-        else:
-            return None
+        error_types = "".join(error_types)
+        cursor.execute("INSERT OR IGNORE INTO error_type (type) VALUES (?)", (error_types, ))
+        
+        self.connection.commit()
+        return cursor.lastrowid
 
 
     def insert_error(self, msg_id, type_id):
